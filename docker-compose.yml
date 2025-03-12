@@ -4,23 +4,26 @@ services:
   backend:
     build: ./backend
     volumes:
-      - ./backend:/app  # Mount backend code for hot reload
+      - ./backend:/app # Mount backend code for hot reload
     ports:
       - "8000:8000"
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload  # Enables FastAPI live reload
+    depends_on:
+      - db
+    env_file:
+      - backend/.env
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev  # Use dev Dockerfile
-    volumes:
-      - ./frontend:/app  # Mount frontend code for hot reload
-      - /app/node_modules  # Prevent overwriting node_modules
-    ports:
-      - "5173:5173"
-    environment:
-      - CHOKIDAR_USEPOLLING=true  # Ensures Vue hot reload works in Docker
-    command: npm run dev  # Runs Vite dev server
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.dev  # Use dev Dockerfile
+  #   volumes:
+  #     - ./frontend:/app  # Mount frontend code for hot reload
+  #     - /app/node_modules  # Prevent overwriting node_modules
+  #   ports:
+  #     - "5173:5173"
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true  # Ensures Vue hot reload works in Docker
+  #   command: npm run dev  # Runs Vite dev server
 
   db:
     image: postgres:15
