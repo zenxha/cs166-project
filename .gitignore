@@ -1,0 +1,60 @@
+# General Ignore Rules
+.DS_Store
+*.log
+.env
+.vscode/
+.idea/
+node_modules/
+venv/
+__pycache__/
+
+# Backend (Python / FastAPI)
+backend/__pycache__/
+backend/*.pyc
+backend/.venv/
+backend/env/
+backend/.mypy_cache/
+backend/.pytest_cache/
+backend/.coverage
+backend/instance/
+backend/*.sqlite3
+
+# Frontend (Vue.js)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env.local
+frontend/.output/
+
+# PostgreSQL (Docker Volumes)
+db_data/
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+*.swp
+*.swo
+*.swn
+
+# Logs and Temp Files
+logs/
+*.log
+tmp/
+*.out
+*.pid
+
+# Ignore compiled and binary files
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.o
+*.a
+*.out
+*.class
+*.jar
+*.war
+*.swp
+*.swo
+*.swn
+
