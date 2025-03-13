@@ -19,8 +19,8 @@ const openEditModal = (user: User, field: 'name' | 'email') => {
   isModalOpen.value = true;
 };
 
-const updateUser = (id: number, updates: Partial<User>) => {
-  adminStore.updateUser(id, updates);
+const updateUser = (login: string, updates: Partial<User>) => {
+  adminStore.updateUser(login, updates);
   isModalOpen.value = false;
 };
 </script>
