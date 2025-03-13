@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import axios from 'axios';
+import { useGlobalStore } from './global';
 
 interface UserProfile {
   id: number;
@@ -12,6 +13,7 @@ interface UserProfile {
 
 export const useUserStore = defineStore('user', () => {
   const profile = ref<UserProfile | null>(null);
+  const globalStore = useGlobalStore();
 
   async function fetchProfile() {
     try {
@@ -34,5 +36,13 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  return { profile, fetchProfile, updateProfile };
+  function onLogout() {
+    profile.value = null;
+  }
+
+  onMounted(() => {
+    globalStore.registerLogoutListener(onLogout);
+  });
+
+  return { profile, fetchProfile, updateProfile, onLogout };
 });

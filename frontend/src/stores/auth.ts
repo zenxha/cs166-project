@@ -1,25 +1,26 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import { useGlobalStore } from './global';
 
 export interface UserData {
-  id: number;
-  fname: string;
-  lname: string;
-  role : string;
+  role: string;
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<UserData | null>(null)
-  const isAuthenticated = computed(() => !!user.value)
-  const fname = computed(() => user.value ? user.value.fname : 'NO NAME FOUND')
+  const activeUser = ref<UserData | null>(null);
+  const isAuthenticated = computed(() => Boolean(activeUser.value));
+  const isAdmin = computed(() => Boolean(activeUser.value?.role == 'admin'));
 
-  function login(userData: { id: number; fname: string; lname: string; role: string }) {
-    user.value = userData
+  function login(userData: UserData) {
+    activeUser.value = userData;
   }
 
   function logout() {
-    user.value = null
+    const globalStore = useGlobalStore();
+    globalStore.triggerLogout();
+
+    activeUser.value = null;
   }
 
-  return { user, isAuthenticated, fname, login, logout }
-})
+  return { user: activeUser, isAuthenticated, isAdmin, login, logout };
+});
