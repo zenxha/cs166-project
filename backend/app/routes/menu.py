@@ -50,7 +50,6 @@ class MenuItem(BaseModel):
     class Config:
         from_attributes = True
 
-# Endpoint to add a new menu item (POST)
 @router.post("/", response_model=MenuItem)
 def create_menu_item(
     menu_item: MenuItem, db: Session = Depends(get_db)
@@ -71,7 +70,7 @@ def create_menu_item(
         db.rollback()
         raise HTTPException(status_code=500, detail="Failed to add menu item")
 
-# Endpoint to update an existing menu item (PUT)
+
 @router.put("/{item_name}", response_model=MenuItem)
 def update_menu_item(
     item_name: str, menu_item: MenuItem, db: Session = Depends(get_db)
