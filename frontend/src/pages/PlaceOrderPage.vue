@@ -2,11 +2,14 @@
 import { onMounted, ref } from 'vue';
 import { useMenuStore } from '@/stores/menu';
 import { useOrderStore } from '@/stores/order';
+import { useAuthStore } from '@/stores/auth'
 
 import MenuItemCard from '@/components/MenuItemCard.vue';
+import CartSummary from '@/components/CartSummary.vue';
 
 const menuStore = useMenuStore();
 const orderStore = useOrderStore();
+const authStore = useAuthStore();
 const orderMessage = ref<string | null>(null);
 
 onMounted(() => {
@@ -15,6 +18,11 @@ onMounted(() => {
 });
 
 const handleOrder = async () => {
+  if (!authStore.isAuthenticated) {
+    orderMessage.value = 'You must be logged in to place an order.';
+    return;
+  }
+
   const result = await orderStore.placeOrder();
   orderMessage.value = result.message;
 };
@@ -23,6 +31,11 @@ const handleOrder = async () => {
 <template>
   <div class="container mx-auto px-4 py-6">
     <h1 class="text-2xl font-bold mb-4">Place Your Order</h1>
+
+    <!-- Show warning if user is not logged in -->
+    <p v-if="!authStore.isAuthenticated" class="text-red-500 font-semibold mb-4">
+      You must be logged in to place an order. <router-link to="/login" class="underline">Login here</router-link>
+    </p>
 
     <!-- Store Selection -->
     <label class="block font-semibold">Select Store:</label>
@@ -45,17 +58,13 @@ const handleOrder = async () => {
     </div>
 
     <!-- Cart Summary -->
-    <h2 class="text-lg font-semibold mt-6">Your Order</h2>
-    <ul class="mt-2">
-      <li v-for="item in orderStore.cart" :key="item.id" class="flex justify-between bg-gray-100 p-2 rounded mb-2">
-        <span>{{ item.name }} (x{{ item.quantity }})</span>
-        <span>${{ (item.price * item.quantity).toFixed(2) }}</span>
-      </li>
-    </ul>
-    <p class="font-bold">Total: ${{ orderStore.orderTotal.toFixed(2) }}</p>
+    <CartSummary class="mt-6" />
 
     <!-- Place Order Button -->
-    <button @click="handleOrder" class="mt-4 px-4 py-2 bg-green-500 text-white rounded w-full">
+    <button
+    @click="handleOrder"
+    :disabled="!authStore.isAuthenticated"
+    class="mt-4 px-4 py-2 bg-green-500 text-white rounded w-full">
       Place Order
     </button>
 

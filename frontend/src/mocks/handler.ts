@@ -25,6 +25,22 @@ interface RegisterRequest {
   phoneNum: string;
 }
 
+interface UserProfile {
+  id: number;
+  name: string;
+  email: string;
+  phoneNum: string;
+  favoriteItem: string;
+}
+
+let mockUserProfile : UserProfile = {
+  id: 1,
+  name: 'John Doe',
+  email: 'user@example.com',
+  phoneNum: '123-456-7890',
+  favoriteItem: 'Pepperoni Pizza',
+};
+
 export const handlers = [
   // Mock user register
   http.post('/api/auth/register', async ({ request }) => {
@@ -63,6 +79,28 @@ export const handlers = [
 
     return new HttpResponse(null, { status: 401 })
   }),
+
+  http.get('/api/user/profile', () => {
+    return HttpResponse.json(mockUserProfile);
+  }),
+
+  http.put('/api/user/profile', async ({ request }) => {
+    const updatedFields = await request.json() as Partial<UserProfile>;
+
+    // Create a new object instead of mutating the original one
+    const updatedProfile: UserProfile = {
+        ...mockUserProfile,
+        ...Object.fromEntries(
+            Object.entries(updatedFields).filter(([key]) => key in mockUserProfile)
+        )
+    };
+
+    // Optionally, update mockUserProfile if mutability is required
+    Object.assign(mockUserProfile, updatedProfile);
+
+    return HttpResponse.json({ message: 'Profile updated successfully!', updatedProfile });
+  }),
+
 
   // Mock menu items
   http.get('/api/menu', () => {
