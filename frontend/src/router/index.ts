@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useAuthStore } from '@/stores/auth';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +9,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/pages/RegisterPage.vue'),
     },
     {
       path: '/login',
@@ -19,6 +25,16 @@ const router = createRouter({
       name: 'menu',
       component: () => import('@/pages/MenuPage.vue'),
     },
+    {
+      path: '/order',
+      name: 'order',
+      component: () => import('@/pages/PlaceOrderPage.vue'),
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/pages/ProfilePage.vue'),
+    },
     // {
     //   path: '/about',
     //   name: 'about',
@@ -28,6 +44,16 @@ const router = createRouter({
     //   component: () => import('../views/AboutView.vue'),
     // },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next('/login'); // Redirect to login if not authenticated
+  } else {
+    next(); // Proceed as normal
+  }
 })
 
 export default router

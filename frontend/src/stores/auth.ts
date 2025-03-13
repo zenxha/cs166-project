@@ -1,11 +1,19 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-export const useAuthStore = defineStore('auth', () => {
-  const user = ref<{ id: number; name: string; role: string } | null>(null)
-  const isAuthenticated = computed(() => !!user.value)
+export interface UserData {
+  id: number;
+  fname: string;
+  lname: string;
+  role : string;
+}
 
-  function login(userData: { id: number; name: string; role: string }) {
+export const useAuthStore = defineStore('auth', () => {
+  const user = ref<UserData | null>(null)
+  const isAuthenticated = computed(() => !!user.value)
+  const fname = computed(() => user.value ? user.value.fname : 'NO NAME FOUND')
+
+  function login(userData: { id: number; fname: string; lname: string; role: string }) {
     user.value = userData
   }
 
@@ -13,5 +21,5 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
   }
 
-  return { user, isAuthenticated, login, logout }
+  return { user, isAuthenticated, fname, login, logout }
 })

@@ -10,7 +10,6 @@ import { worker } from './mocks/browser'
 
 if (import.meta.env.MODE === 'development') {
   console.log('Starting server in development mode')
-  worker.start()
 }
 
 const app = createApp(App)
