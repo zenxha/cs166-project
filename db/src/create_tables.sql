@@ -29,7 +29,7 @@ CREATE TABLE Store ( storeID integer NOT NULL,
                            PRIMARY KEY(storeID)
 );
 
-CREATE TABLE FoodOrder ( orderID integer NOT NULL,
+CREATE TABLE FoodOrder ( orderID SERIAL PRIMARY KEY,
                            login varchar(50) NOT NULL, --places relationship
                            storeID integer NOT NULL, --placedAt relationship
                            totalPrice decimal(10,2) NOT NULL,

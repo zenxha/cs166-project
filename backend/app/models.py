@@ -33,7 +33,7 @@ class Item(Base):
 class Store(Base):
     __tablename__ = "store"
     
-    storeID = Column(Integer, primary_key=True)
+    storeid = Column(Integer, primary_key=True)
     address = Column(String(50), nullable=False)
     city = Column(String(50), nullable=False)
     state = Column(String(60), nullable=False)
@@ -47,12 +47,12 @@ class Store(Base):
 class FoodOrder(Base):
     __tablename__ = "foodorder"
     
-    orderID = Column(Integer, primary_key=True)
+    orderid = Column(Integer, primary_key=True, autoincrement=True)
     login = Column(String(50), ForeignKey("users.login", ondelete="CASCADE"), nullable=False)
-    storeID = Column(Integer, ForeignKey("store.storeID", ondelete="CASCADE"), nullable=False)
-    totalPrice = Column(Numeric(10, 2), nullable=False)
-    orderTimestamp = Column(DateTime, nullable=False)
-    orderStatus = Column(String(50))
+    storeid = Column(Integer, ForeignKey("store.storeid", ondelete="CASCADE"), nullable=False)
+    totalprice = Column(Numeric(10, 2), nullable=False)
+    ordertimestamp = Column(DateTime, nullable=False)
+    orderstatus = Column(String(50))
 
     # Relationships
     user = relationship("User", back_populates="orders")
@@ -63,8 +63,8 @@ class FoodOrder(Base):
 class ItemsInOrder(Base):
     __tablename__ = "itemsinorder"
     
-    orderID = Column(Integer, ForeignKey("foodorder.orderID", ondelete="CASCADE"), primary_key=True)
-    itemname = Column(String(50), ForeignKey("items.itemname", ondelete="CASCADE"), primary_key=True)
+    orderid = Column(Integer, ForeignKey("foodorder.orderid", ondelete="CASCADE"), primary_key=True)
+    itemname = Column(String(50), ForeignKey("items.itemname"), primary_key=True)
     quantity = Column(Integer, nullable=False)
 
     # Relationships
