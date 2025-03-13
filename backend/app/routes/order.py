@@ -153,8 +153,8 @@ class OrderStatusUpdate(BaseModel):
 @router.put("/{orderid}/status", response_model=OrderCreate)
 def update_order_status(orderid: int, status_update: OrderStatusUpdate, db: Session = Depends(get_db)):
     try:
-        if status_update.status not in ["Pending", "In Progress", "Delivered", "Cancelled"]:
-            raise HTTPException(status_code=400, detail="Invalid status update")
+        if status_update.status not in ["complete", "incomplete"]:
+            raise HTTPException(status_code=400, detail="Invalid status update: must be complete or incomplete")
         order = db.query(FoodOrder).filter(FoodOrder.orderid == orderid).first()
         
         if not order:
