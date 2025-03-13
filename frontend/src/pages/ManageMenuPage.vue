@@ -61,65 +61,69 @@ const updateMenuItem = (itemname: string, updates: Partial<MenuItem>) => {
   <div class="container mx-auto px-4 py-6">
     <h1 class="mb-4 text-2xl font-bold">Manage Menu</h1>
 
-
     <div class="mb-4 flex space-x-4">
       <button
         @click="router.push('/manage/orders')"
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+        class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
       >
         Manage Orders
       </button>
       <button
         @click="router.push('/manage/users')"
-        class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700"
+        class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
       >
         Manage Users
       </button>
     </div>
 
     <!-- Search & Sort Controls -->
-    <div class="mb-4 flex space-x-4">
+    <div class="bg-white shadow-md rounded-lg p-4 flex flex-wrap items-center justify-between mb-6">
       <input
         v-model="menuAdminStore.searchQuery"
         type="text"
         placeholder="Search menu..."
-        class="w-1/3 rounded border p-2"
+        class="w-full sm:w-1/3 rounded-md border p-2 text-gray-700 focus:ring-2 focus:ring-blue-400"
       />
 
-      <select v-model="menuAdminStore.sortField" class="rounded border p-2">
-        <option :value="null">Sort By</option>
-        <option value="itemname">Item Name</option>
-        <option value="price">Price</option>
-        <option value="typeofitem">Category</option>
-      </select>
+      <div class="flex space-x-4 mt-2 sm:mt-0">
+        <select v-model="menuAdminStore.sortField" class="rounded-md border p-2 text-gray-700 focus:ring-2 focus:ring-blue-400">
+          <option :value="null">Sort By</option>
+          <option value="itemname">Item Name</option>
+          <option value="price">Price</option>
+          <option value="typeofitem">Category</option>
+        </select>
 
-      <select v-model="menuAdminStore.sortOrder" class="rounded border p-2">
-        <option :value="null">Order</option>
-        <option value="asc">Ascending</option>
-        <option value="desc">Descending</option>
-      </select>
+        <select v-model="menuAdminStore.sortOrder" class="rounded-md border p-2 text-gray-700 focus:ring-2 focus:ring-blue-400">
+          <option :value="null">Order</option>
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
     </div>
 
     <!-- Menu Table -->
-    <table class="w-full border-collapse border border-gray-300">
+    <table class="w-full border-collapse shadow-lg rounded-lg overflow-hidden">
       <thead>
-        <tr class="bg-gray-200">
-          <th class="border border-gray-300 p-2">Item Name</th>
-          <th class="border border-gray-300 p-2">Ingredients</th>
-          <th class="border border-gray-300 p-2">Category</th>
-          <th class="border border-gray-300 p-2">Price</th>
-          <th class="border border-gray-300 p-2">Description</th>
+        <tr class="bg-gradient-to-r bg-blue-500 text-white">
+          <th class="border border-gray-300 p-3 text-left">Item Name</th>
+          <th class="border border-gray-300 p-3 text-left">Ingredients</th>
+          <th class="border border-gray-300 p-3 text-left">Category</th>
+          <th class="border border-gray-300 p-3 text-left">Price</th>
+          <th class="border border-gray-300 p-3 text-left">Description</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in menuAdminStore.filteredMenuItems" :key="item.itemname">
-          <td class="border border-gray-300 p-2 hover:underline" @click="openEditModal(item)">
+        <tr v-for="item in menuAdminStore.filteredMenuItems" :key="item.itemname" class="odd:bg-gray-100 hover:bg-gray-200 transition">
+          <td
+            class="border border-gray-300 p-3 font-semibold text-blue-600 hover:underline cursor-pointer"
+            @click="openEditModal(item)"
+          >
             {{ item.itemname }}
           </td>
-          <td class="border border-gray-300 p-2">{{ item.ingredients }}</td>
-          <td class="border border-gray-300 p-2">{{ item.typeofitem }}</td>
-          <td class="border border-gray-300 p-2">${{ item.price.toFixed(2) }}</td>
-          <td class="border border-gray-300 p-2">{{ item.description }}</td>
+          <td class="border border-gray-300 p-3">{{ item.ingredients }}</td>
+          <td class="border border-gray-300 p-3">{{ item.typeofitem }}</td>
+          <td class="border border-gray-300 p-3 text-green-600 font-semibold">${{ item.price.toFixed(2) }}</td>
+          <td class="border border-gray-300 p-3">{{ item.description }}</td>
         </tr>
       </tbody>
     </table>

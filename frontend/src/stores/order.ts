@@ -66,7 +66,7 @@ export const useOrderStore = defineStore('order', () => {
       const response = await axios.post('/api/order', {
         login: authStore.username,
         storeId: selectedStore.value.id,
-        items: cart.value.map(({itemname, price, quantity }) => ({
+        items: cart.value.map(({ itemname, price, quantity }) => ({
           itemname,
           price,
           quantity,
@@ -76,7 +76,7 @@ export const useOrderStore = defineStore('order', () => {
       cart.value = []; // Clear the cart after ordering
       return {
         success: true,
-        message: `Order placed! Total: $${response.data.totalPrice.toFixed(2)}`,
+        message: `Order placed! Total: $${response.data.totalprice.toFixed(2)}`,
       };
     } catch (error) {
       return { success: false, message: 'Failed to place order. Please try again.' };

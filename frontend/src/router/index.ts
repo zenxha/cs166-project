@@ -93,9 +93,9 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login'); // Redirect to login if not authenticated
   } else if (to.meta.requiresAdmin && !authStore.isAdmin) {
-    next('/menu')
+    next('/menu');
   } else if (to.meta.requiresDriver && !(authStore.isAdmin || authStore.isDriver)) {
-    next('/menu')
+    next('/menu');
   } else {
     next(); // Proceed as normal
   }

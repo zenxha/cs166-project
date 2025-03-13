@@ -4,8 +4,6 @@ import axios from 'axios';
 import { useGlobalStore } from './global';
 
 interface UserProfile {
-  id: number;
-  name: string;
   email: string;
   phoneNum: string;
   favoriteItem: string;
