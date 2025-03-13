@@ -3,17 +3,6 @@ import { computed } from 'vue';
 import { useOrderStore } from '@/stores/order';
 
 const orderStore = useOrderStore();
-
-// Prevent invalid inputs
-// const validateQuantity = (id: number, event: Event) => {
-//   console.log(id)
-//   const input = event.target as HTMLInputElement
-//   let value = parseInt(input.value, 10)
-//   if (isNaN(value) || value < 1) {
-//     value = 1
-//   }
-//   orderStore.updateQuantity(id, value)
-// }
 </script>
 
 <template>

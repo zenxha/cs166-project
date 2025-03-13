@@ -13,6 +13,7 @@ interface OrderItem {
 }
 
 interface OrderRequest {
+  login: string;
   storeId: number;
   items: OrderItem[];
 }
@@ -43,7 +44,7 @@ interface MenuItem {
 interface User {
   login: string;
   email: string;
-  role: 'customer' | 'manager' | 'admin';
+  role: 'customer' | 'driver' | 'admin';
   favoriteItem: string;
   phoneNum: string;
 }
@@ -59,7 +60,7 @@ let mockUsers: User[] = [
   {
     login: 'Jane Smith',
     email: 'jane@example.com',
-    role: 'manager',
+    role: 'driver',
     favoriteItem: 'Burger',
     phoneNum: '987-654-3210',
   },
@@ -156,15 +157,16 @@ export const handlers = [
 
   // Mock user login
   http.post('/api/auth/login', async ({ request }) => {
-    console.log('Got auth login request!');
     const { email, password } = (await request.json()) as LoginRequest;
 
     if (email === 'user@example.com' && password === 'password') {
       return HttpResponse.json({
+        login: 'john_doe',
         role: 'customer',
       });
     } else if (email === 'admin@example.com' && password === 'admin') {
       return HttpResponse.json({
+        login: 'admin',
         role: 'admin',
       });
     }
@@ -194,12 +196,64 @@ export const handlers = [
   }),
 
   // Mock menu items
-  http.get('/api/menu', () => {
-    return HttpResponse.json(mockMenu);
+  // http.get('/api/menu', () => {
+  //   return HttpResponse.json(mockMenu);
+  // }),
+  http.get('/api/menu', ({ request }) => {
+    const url = new URL(request.url);
+    const type = url.searchParams.get('type'); // Get filter by type
+    const maxprice = url.searchParams.get('maxprice'); // Get max price
+    const sort = url.searchParams.get('sort'); // Get sorting order
+
+    let filteredMenu = [...mockMenu];
+
+    // Apply Type Filter
+    if (type) {
+      if (!['Main', 'Side'].includes(type)) {
+        return HttpResponse.json({ error: 'Invalid menu item type specified' }, { status: 400 });
+      }
+      filteredMenu = filteredMenu.filter((item) => item.typeofitem === type);
+    }
+
+    // Apply Max Price Filter
+    if (maxprice !== null) {
+      const maxPriceNum = parseFloat(maxprice);
+      if (!isNaN(maxPriceNum)) {
+        filteredMenu = filteredMenu.filter((item) => item.price <= maxPriceNum);
+      }
+    }
+
+    // Apply Sorting
+    if (sort === 'asc') {
+      filteredMenu.sort((a, b) => a.price - b.price);
+    } else if (sort === 'desc') {
+      filteredMenu.sort((a, b) => b.price - a.price);
+    }
+
+    return HttpResponse.json(filteredMenu);
+  }),
+
+  // Add new menu items
+  http.post('/api/menu', async ({ request }) => {
+    const newItem = (await request.json()) as MenuItem;
+    console.log('api server Received menuItem', newItem);
+    mockMenu.push(newItem);
+    return HttpResponse.json(newItem);
+  }),
+
+  http.put('/api/menu/:itemname', async ({ params, request }) => {
+    const { itemname } = params;
+    const updates = (await request.json()) as Partial<MenuItem>;
+
+    const index = mockMenu.findIndex((item) => item.itemname === itemname);
+    if (index !== -1) {
+      mockMenu[index] = { ...mockMenu[index], ...updates };
+      return HttpResponse.json(mockMenu[index]);
+    }
+    return new HttpResponse(null, { status: 404 });
   }),
 
   http.get('/api/stores', () => {
-    console.log('Got stores request?');
     return HttpResponse.json([
       { id: 1, name: 'Downtown Store', location: '123 Main St', reviewScore: 4.5, isOpen: true },
       { id: 2, name: 'Uptown Store', location: '456 High St', reviewScore: 4.2, isOpen: true },
@@ -229,8 +283,6 @@ export const handlers = [
 
   http.put('/api/users/:login', async ({ params, request }) => {
     const { login } = params;
-    console.log(login);
-    console.log('Above is in handler');
     const updates = (await request.json()) as Partial<Omit<User, 'password'>>;
 
     // Find user & update fields (except password)

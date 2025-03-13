@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,9 +15,27 @@ export type MenuItem = {
 export const useMenuStore = defineStore('menu', () => {
   const items = ref<MenuItem[]>([]);
   const filterType = ref<string | null>(null);
+  const maxPrice = ref<number | null>(null);
   const sortOrder = ref<'asc' | 'desc' | null>(null);
 
   async function fetchMenu() {
+    try {
+      // Construct query parameters
+      const params: Record<string, string | number> = {};
+      if (filterType.value) params.type = filterType.value;
+      if (maxPrice.value !== null) params.maxprice = maxPrice.value;
+      if (sortOrder.value) params.sort = sortOrder.value;
+
+      const response = await axios.get<MenuItem[]>('/api/menu', { params });
+      items.value = response.data;
+    } catch (error) {
+      console.error('Failed to fetch menu:', error);
+    }
+  }
+
+  watch([filterType, maxPrice, sortOrder], fetchMenu);
+
+  async function fetchMenu_old() {
     try {
       const response = await axios.get<MenuItem[]>('/api/menu');
       items.value = response.data;
@@ -59,5 +77,5 @@ export const useMenuStore = defineStore('menu', () => {
     return result;
   });
 
-  return { items, filteredItems, fetchMenu, filterType, sortOrder };
+  return { items, filteredItems, fetchMenu, filterType, sortOrder, maxPrice };
 });

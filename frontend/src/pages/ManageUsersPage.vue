@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useAdminStore } from '@/stores/admin';
+import type { User } from '@/stores/admin';
 
 import EditUserModal from '@/components/EditUserModal.vue';
 
 const adminStore = useAdminStore();
 const selectedUser = ref<User | null>(null);
-const editField = ref<'name' | 'email' | null>(null);
+const editField = ref<'login' | 'email' | null>(null);
 const isModalOpen = ref(false);
 
 onMounted(() => {
   adminStore.fetchUsers();
 });
 
-const openEditModal = (user: User, field: 'name' | 'email') => {
+const openEditModal = (user: User, field: 'login' | 'email') => {
   selectedUser.value = user;
   editField.value = field;
   isModalOpen.value = true;
@@ -84,17 +85,10 @@ const updateUser = (login: string, updates: Partial<User>) => {
               class="rounded border p-1"
             >
               <option value="customer">Customer</option>
-              <option value="manager">Manager</option>
-              <option value="admin">Admin</option>
+              <option value="driver">Driver</option>
+              <option value="admin">Manager</option>
             </select>
           </td>
-          <!-- <td class="border border-gray-300 p-2">
-            <input
-              v-model="user.phoneNum"
-              @blur="adminStore.updateUser(user.login, { phoneNum: user.phoneNum })"
-              class="w-full rounded border p-1"
-            />
-          </td> -->
           <td
             class="cursor-pointer border border-gray-300 p-2 hover:underline"
             @click="openEditModal(user, 'phoneNum')"
