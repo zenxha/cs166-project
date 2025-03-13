@@ -37,7 +37,7 @@ class Store(Base):
     city = Column(String(50), nullable=False)
     state = Column(String(60), nullable=False)
     isopen = Column(String(60), nullable=False)
-    revie_score = Column(Float)
+    reviewscore = Column(Float)
 
     # Relationship to FoodOrder
     orders = relationship("FoodOrder", back_populates="store")
