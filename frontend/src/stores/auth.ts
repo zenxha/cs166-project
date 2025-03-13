@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
   const activeUser = ref<UserData | null>(null);
   const isAuthenticated = computed(() => Boolean(activeUser.value));
   const isAdmin = computed(() => Boolean(activeUser.value?.role === 'admin'));
-  const isDriver = computed(() => Boolean(activeUser.value?.role === 'driver'))
+  const isDriver = computed(() => Boolean(activeUser.value?.role === 'driver'));
   const username = computed(() => activeUser.value?.login || '');
 
   function login(userData: UserData) {

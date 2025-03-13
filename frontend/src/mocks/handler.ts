@@ -25,8 +25,6 @@ interface RegisterRequest {
 }
 
 interface UserProfile {
-  id: number;
-  name: string;
   email: string;
   phoneNum: string;
   favoriteItem: string;
@@ -59,7 +57,7 @@ interface Order {
   orderid: number;
   login: string;
   storeid: number;
-  totalPrice: number;
+  totalprice: number;
   ordertimestamp: string;
   orderstatus: OrderStatus;
   items: OrderReceiptEntry[];
@@ -142,8 +140,6 @@ let mockMenu: MenuItem[] = [
 ];
 
 let mockUserProfile: UserProfile = {
-  id: 1,
-  name: 'John Doe',
   email: 'user@example.com',
   phoneNum: '123-456-7890',
   favoriteItem: 'Pepperoni Pizza',
@@ -154,7 +150,7 @@ let mockOrders: Order[] = [
     orderid: 1,
     login: 'John Doe',
     storeid: 101,
-    totalPrice: 27.74,
+    totalprice: 27.74,
     ordertimestamp: '2024-03-11T12:30:00Z',
     orderstatus: 'Pending',
     items: [
@@ -166,7 +162,7 @@ let mockOrders: Order[] = [
     orderid: 2,
     login: 'Jane Smith',
     storeid: 102,
-    totalPrice: 20.50,
+    totalprice: 20.5,
     ordertimestamp: '2024-03-10T15:45:00Z',
     orderstatus: 'Out for Delivery',
     items: [
@@ -176,9 +172,9 @@ let mockOrders: Order[] = [
   },
   {
     orderid: 3,
-    login: 'Admin User',
+    login: 'admin',
     storeid: 103,
-    totalPrice: 23.75,
+    totalprice: 23.75,
     ordertimestamp: '2024-03-09T18:20:00Z',
     orderstatus: 'Delivered',
     items: [
@@ -186,7 +182,67 @@ let mockOrders: Order[] = [
       { itemname: 'Taco', quantity: 2 },
     ],
   },
-]
+  {
+    orderid: 4,
+    login: 'admin',
+    storeid: 103,
+    totalprice: 23.75,
+    ordertimestamp: '2024-03-09T18:20:00Z',
+    orderstatus: 'Delivered',
+    items: [
+      { itemname: 'Sushi', quantity: 1 },
+      { itemname: 'Taco', quantity: 2 },
+    ],
+  },
+  {
+    orderid: 5,
+    login: 'admin',
+    storeid: 103,
+    totalprice: 23.75,
+    ordertimestamp: '2024-03-09T18:20:00Z',
+    orderstatus: 'Delivered',
+    items: [
+      { itemname: 'Sushi', quantity: 1 },
+      { itemname: 'Taco', quantity: 2 },
+    ],
+  },
+  {
+    orderid: 6,
+    login: 'admin',
+    storeid: 103,
+    totalprice: 23.75,
+    ordertimestamp: '2024-03-09T18:20:00Z',
+    orderstatus: 'Delivered',
+    items: [
+      { itemname: 'Sushi', quantity: 1 },
+      { itemname: 'Taco', quantity: 2 },
+    ],
+  },
+  {
+    orderid: 7,
+    login: 'admin',
+    storeid: 103,
+    totalprice: 23.75,
+    ordertimestamp: '2024-03-09T18:20:00Z',
+    orderstatus: 'Delivered',
+    items: [
+      { itemname: 'Sushi', quantity: 1 },
+      { itemname: 'Taco', quantity: 2 },
+    ],
+  },
+  {
+    orderid: 8,
+    login: 'admin',
+    storeid: 103,
+    totalprice: 23.75,
+    ordertimestamp: '2024-03-09T18:20:00Z',
+    orderstatus: 'Delivered',
+    items: [
+      { itemname: 'Sushi', quantity: 1 },
+      { itemname: 'Taco', quantity: 2 },
+    ],
+  },
+];
 
 export const handlers = [
   // Mock user register
@@ -340,19 +396,26 @@ export const handlers = [
   http.get('/api/orders', async ({ request }) => {
     const url = new URL(request.url);
     const loginFilter = url.searchParams.get('login');
-    const limit = Number(url.searchParams.get('limit')) || mockOrders.length;
+    const limit = Number(url.searchParams.get('limit')) || 5;
+    const page = Number(url.searchParams.get('page')) || 1;
 
     let filteredOrders = mockOrders;
     if (loginFilter) {
       filteredOrders = filteredOrders.filter((order) => order.login === loginFilter);
     }
 
-    return HttpResponse.json(filteredOrders.slice(0, limit));
+    // return HttpResponse.json(filteredOrders.slice(0, limit));
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    return HttpResponse.json({
+      orders: filteredOrders.slice(start, end),
+      totalOrders: filteredOrders.length,
+    });
   }),
 
   http.put('/api/orders/:id', async ({ params, request }) => {
     const { id } = params;
-    const { orderstatus } = await request.json() as { orderstatus : OrderStatus };
+    const { orderstatus } = (await request.json()) as { orderstatus: OrderStatus };
 
     const orderIndex = mockOrders.findIndex((o) => o.orderid === Number(id));
     if (orderIndex !== -1) {

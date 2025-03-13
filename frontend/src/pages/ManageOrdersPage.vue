@@ -20,13 +20,13 @@ onMounted(() => {
     <div v-if="authStore.isAdmin" class="mb-4 flex space-x-4">
       <button
         @click="router.push('/manage/menu')"
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
+        class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
       >
         Manage Menu
       </button>
       <button
         @click="router.push('/manage/users')"
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
+        class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
       >
         Manage Users
       </button>
@@ -44,7 +44,7 @@ onMounted(() => {
       <select v-model="orderAdminStore.sortField" class="rounded border p-2">
         <option :value="null">Sort By</option>
         <option value="ordertimestamp">Date</option>
-        <option value="totalPrice">Total Price</option>
+        <option value="totalprice">Total Price</option>
         <option value="orderstatus">Status</option>
       </select>
 
@@ -71,7 +71,7 @@ onMounted(() => {
         <tr v-for="order in orderAdminStore.filteredOrders" :key="order.orderid">
           <td class="border border-gray-300 p-2">{{ order.orderid }}</td>
           <td class="border border-gray-300 p-2">{{ order.login }}</td>
-          <td class="border border-gray-300 p-2">${{ order.totalPrice.toFixed(2) }}</td>
+          <td class="border border-gray-300 p-2">${{ order.totalprice.toFixed(2) }}</td>
           <td class="border border-gray-300 p-2">
             {{ new Date(order.ordertimestamp).toLocaleString() }}
           </td>

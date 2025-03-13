@@ -36,13 +36,13 @@ const updateUser = (login: string, updates: Partial<User>) => {
     <div class="mb-4 flex space-x-4">
       <button
         @click="router.push('/manage/menu')"
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
+        class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
       >
         Manage Menu
       </button>
       <button
         @click="router.push('/manage/orders')"
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
+        class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
       >
         Manage Orders
       </button>

@@ -61,17 +61,16 @@ const updateMenuItem = (itemname: string, updates: Partial<MenuItem>) => {
   <div class="container mx-auto px-4 py-6">
     <h1 class="mb-4 text-2xl font-bold">Manage Menu</h1>
 
-
     <div class="mb-4 flex space-x-4">
       <button
         @click="router.push('/manage/orders')"
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
+        class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
       >
         Manage Orders
       </button>
       <button
         @click="router.push('/manage/users')"
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
+        class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
       >
         Manage Users
       </button>

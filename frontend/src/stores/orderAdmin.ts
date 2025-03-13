@@ -11,7 +11,7 @@ export type Order = {
   orderid: number;
   login: string;
   storeid: number;
-  totalPrice: number;
+  totalprice: number;
   ordertimestamp: string;
   orderstatus: 'Pending' | 'Preparing' | 'Out for Delivery' | 'Delivered';
   items: OrderReceiptEntry[];
@@ -20,7 +20,7 @@ export type Order = {
 export const useOrderAdminStore = defineStore('orderAdmin', () => {
   const orders = ref<Order[]>([]);
   const searchLogin = ref('');
-  const sortField = ref<'ordertimestamp' | 'totalPrice' | 'orderstatus' | null>(null);
+  const sortField = ref<'ordertimestamp' | 'totalprice' | 'orderstatus' | null>(null);
   const sortOrder = ref<'asc' | 'desc' | null>(null);
 
   async function fetchOrders(login?: string, limit?: number) {
@@ -50,7 +50,9 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
     let result = [...orders.value];
 
     if (searchLogin.value) {
-      result = result.filter((order) => order.login.toLowerCase().includes(searchLogin.value.toLowerCase()));
+      result = result.filter((order) =>
+        order.login.toLowerCase().includes(searchLogin.value.toLowerCase()),
+      );
     }
 
     if (sortField.value && sortOrder.value) {
@@ -67,5 +69,13 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
     return result;
   });
 
-  return { orders, searchLogin, sortField, sortOrder, fetchOrders, updateOrderStatus, filteredOrders };
+  return {
+    orders,
+    searchLogin,
+    sortField,
+    sortOrder,
+    fetchOrders,
+    updateOrderStatus,
+    filteredOrders,
+  };
 });
