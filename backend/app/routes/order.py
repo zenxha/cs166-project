@@ -78,3 +78,94 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()  # Rollback on other exceptions
         raise HTTPException(status_code=400, detail="Error: " + str(e))
+    
+
+@router.get("/history/", response_model=List[OrderCreate])
+def get_all_orders(db: Session = Depends(get_db), login: Optional[str] = None, limit: Optional[int] = None):
+    try:
+        query = db.query(FoodOrder)
+        if login:
+            query = query.filter(FoodOrder.login == login)
+
+        orders = query.all()
+        res = []
+        
+        for order in orders:
+            items = db.query(ItemsInOrder).filter(ItemsInOrder.orderid == order.orderid).all()
+            res.append({
+                "orderid": order.orderid,
+                "login": order.login,
+                "storeid": order.storeid,
+                "totalprice": order.totalprice,
+                "ordertimestamp": order.ordertimestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                "orderstatus": order.orderstatus,
+                "items": [{"itemname": item.itemname, "quantity": item.quantity} for item in items]
+            })
+
+        if limit:
+            res = res[:limit]
+
+        return res
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail="Database error: " + str(e))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Error: " + str(e))
+    
+@router.get("/{orderid}", response_model=OrderCreate)
+def get_order_by_id(orderid: int, db: Session = Depends(get_db)):
+    try:
+        order = db.query(FoodOrder).filter(FoodOrder.orderid == orderid).first()
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        items = db.query(ItemsInOrder).filter(ItemsInOrder.orderid == orderid).all()
+        return {
+            "orderid": order.orderid,
+            "login": order.login,
+            "storeid": order.storeid,
+            "totalprice": order.totalprice,
+            "ordertimestamp": order.ordertimestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            "orderstatus": order.orderstatus,
+            "items": [{"itemname": item.itemname, "quantity": item.quantity} for item in items]
+        }
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail="Database error: " + str(e))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Error: " + str(e))
+
+class OrderStatusUpdate(BaseModel):
+    status: str
+
+@router.put("/{orderid}/status", response_model=OrderCreate)
+def update_order_status(orderid: int, status_update: OrderStatusUpdate, db: Session = Depends(get_db)):
+    try:
+        if status_update.status not in ["Pending", "In Progress", "Delivered", "Cancelled"]:
+            raise HTTPException(status_code=400, detail="Invalid status update")
+        order = db.query(FoodOrder).filter(FoodOrder.orderid == orderid).first()
+        
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        
+        order.orderstatus = status_update.status
+        db.commit()
+        db.refresh(order) 
+
+        # Fetch items associated with the order
+        items = db.query(ItemsInOrder).filter(ItemsInOrder.orderid == orderid).all()
+
+
+        return {
+            "orderid": order.orderid,
+            "login": order.login,
+            "storeid": order.storeid,
+            "totalprice": order.totalprice,
+            "ordertimestamp": order.ordertimestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            "orderstatus": order.orderstatus,
+            "items": [{"itemname": item.itemname, "quantity": item.quantity} for item in items]
+        }
+        
+    except SQLAlchemyError as e:
+        db.rollback()  # Rollback in case of an exception
+        raise HTTPException(status_code=500, detail="Database error: " + str(e))
+    except Exception as e:
+        db.rollback()  # Rollback for other exceptions
+        raise HTTPException(status_code=400, detail="Error: " + str(e))
