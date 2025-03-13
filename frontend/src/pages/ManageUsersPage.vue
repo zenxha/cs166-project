@@ -36,15 +36,15 @@ const updateUser = (login: string, updates: Partial<User>) => {
     <div class="mb-4 flex space-x-4">
       <button
         @click="router.push('/manage/menu')"
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
       >
         Manage Menu
       </button>
       <button
-        @click="router.push('/manage/users')"
-        class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700"
+        @click="router.push('/manage/orders')"
+        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
       >
-        Manage Users
+        Manage Orders
       </button>
     </div>
 

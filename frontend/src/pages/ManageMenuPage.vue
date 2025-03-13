@@ -65,13 +65,13 @@ const updateMenuItem = (itemname: string, updates: Partial<MenuItem>) => {
     <div class="mb-4 flex space-x-4">
       <button
         @click="router.push('/manage/orders')"
-        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
       >
         Manage Orders
       </button>
       <button
         @click="router.push('/manage/users')"
-        class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700"
+        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
       >
         Manage Users
       </button>
