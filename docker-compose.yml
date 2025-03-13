@@ -26,7 +26,7 @@ services:
   #   command: npm run dev  # Runs Vite dev server
 
   db:
-    image: postgres:15
+    build: ./db
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
