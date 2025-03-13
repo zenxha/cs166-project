@@ -6,7 +6,6 @@ interface LoginRequest {
 }
 
 interface OrderItem {
-  id: number;
   name: string;
   price: number;
   quantity: number;
@@ -47,6 +46,23 @@ interface User {
   role: 'customer' | 'driver' | 'admin';
   favoriteItem: string;
   phoneNum: string;
+}
+
+interface OrderReceiptEntry {
+  itemname: string;
+  quantity: number;
+}
+
+type OrderStatus = 'Pending' | 'Preparing' | 'Out for Delivery' | 'Delivered';
+
+interface Order {
+  orderid: number;
+  login: string;
+  storeid: number;
+  totalPrice: number;
+  ordertimestamp: string;
+  orderstatus: OrderStatus;
+  items: OrderReceiptEntry[];
 }
 
 let mockUsers: User[] = [
@@ -133,6 +149,45 @@ let mockUserProfile: UserProfile = {
   favoriteItem: 'Pepperoni Pizza',
 };
 
+let mockOrders: Order[] = [
+  {
+    orderid: 1,
+    login: 'John Doe',
+    storeid: 101,
+    totalPrice: 27.74,
+    ordertimestamp: '2024-03-11T12:30:00Z',
+    orderstatus: 'Pending',
+    items: [
+      { itemname: 'Burger', quantity: 2 },
+      { itemname: 'Fries', quantity: 1 },
+    ],
+  },
+  {
+    orderid: 2,
+    login: 'Jane Smith',
+    storeid: 102,
+    totalPrice: 20.50,
+    ordertimestamp: '2024-03-10T15:45:00Z',
+    orderstatus: 'Out for Delivery',
+    items: [
+      { itemname: 'Pizza', quantity: 1 },
+      { itemname: 'Salad', quantity: 1 },
+    ],
+  },
+  {
+    orderid: 3,
+    login: 'Admin User',
+    storeid: 103,
+    totalPrice: 23.75,
+    ordertimestamp: '2024-03-09T18:20:00Z',
+    orderstatus: 'Delivered',
+    items: [
+      { itemname: 'Sushi', quantity: 1 },
+      { itemname: 'Taco', quantity: 2 },
+    ],
+  },
+]
+
 export const handlers = [
   // Mock user register
   http.post('/api/auth/register', async ({ request }) => {
@@ -168,6 +223,11 @@ export const handlers = [
       return HttpResponse.json({
         login: 'admin',
         role: 'admin',
+      });
+    } else if (email === 'driver@example.com' && password === 'driver') {
+      return HttpResponse.json({
+        login: 'driver',
+        role: 'driver',
       });
     }
 
@@ -275,6 +335,31 @@ export const handlers = [
       totalPrice,
       message: 'Order placed successfully!',
     });
+  }),
+
+  http.get('/api/orders', async ({ request }) => {
+    const url = new URL(request.url);
+    const loginFilter = url.searchParams.get('login');
+    const limit = Number(url.searchParams.get('limit')) || mockOrders.length;
+
+    let filteredOrders = mockOrders;
+    if (loginFilter) {
+      filteredOrders = filteredOrders.filter((order) => order.login === loginFilter);
+    }
+
+    return HttpResponse.json(filteredOrders.slice(0, limit));
+  }),
+
+  http.put('/api/orders/:id', async ({ params, request }) => {
+    const { id } = params;
+    const { orderstatus } = await request.json() as { orderstatus : OrderStatus };
+
+    const orderIndex = mockOrders.findIndex((o) => o.orderid === Number(id));
+    if (orderIndex !== -1) {
+      mockOrders[orderIndex].orderstatus = orderstatus;
+      return HttpResponse.json(mockOrders[orderIndex]);
+    }
+    return new HttpResponse(null, { status: 404 });
   }),
 
   http.get('/api/users', () => {

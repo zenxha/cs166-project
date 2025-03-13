@@ -33,7 +33,7 @@ export const useOrderStore = defineStore('order', () => {
   }
 
   function addToCart(item: MenuItem) {
-    const existingItem = cart.value.find((i) => i.id === item.id);
+    const existingItem = cart.value.find((i) => i.itemname === item.itemname);
     if (existingItem) {
       existingItem.quantity++;
     } else {
@@ -41,16 +41,16 @@ export const useOrderStore = defineStore('order', () => {
     }
   }
 
-  function updateQuantity(id: number, quantity: number) {
+  function updateQuantity(itemname: string, quantity: number) {
     if (quantity < 1) quantity = 1; // Prevent invalid values
-    const item = cart.value.find((item) => item.id === id);
+    const item = cart.value.find((item) => item.itemname === itemname);
     if (item) {
       item.quantity = quantity;
     }
   }
 
-  function removeFromCart(id: number) {
-    cart.value = cart.value.filter((i) => i.id !== id);
+  function removeFromCart(itemname: string) {
+    cart.value = cart.value.filter((i) => i.itemname !== itemname);
   }
 
   async function placeOrder() {
@@ -66,8 +66,7 @@ export const useOrderStore = defineStore('order', () => {
       const response = await axios.post('/api/order', {
         login: authStore.username,
         storeId: selectedStore.value.id,
-        items: cart.value.map(({ id, itemname, price, quantity }) => ({
-          id,
+        items: cart.value.map(({itemname, price, quantity }) => ({
           itemname,
           price,
           quantity,

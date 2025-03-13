@@ -10,7 +10,8 @@ export interface UserData {
 export const useAuthStore = defineStore('auth', () => {
   const activeUser = ref<UserData | null>(null);
   const isAuthenticated = computed(() => Boolean(activeUser.value));
-  const isAdmin = computed(() => Boolean(activeUser.value?.role == 'admin'));
+  const isAdmin = computed(() => Boolean(activeUser.value?.role === 'admin'));
+  const isDriver = computed(() => Boolean(activeUser.value?.role === 'driver'))
   const username = computed(() => activeUser.value?.login || '');
 
   function login(userData: UserData) {
@@ -24,5 +25,5 @@ export const useAuthStore = defineStore('auth', () => {
     activeUser.value = null;
   }
 
-  return { user: activeUser, isAuthenticated, isAdmin, username, login, logout };
+  return { user: activeUser, isAuthenticated, isAdmin, isDriver, username, login, logout };
 });

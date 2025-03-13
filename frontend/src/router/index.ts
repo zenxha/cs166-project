@@ -43,7 +43,11 @@ const router = createRouter({
     },
     {
       path: '/manage',
-      redirect: '/manage/menu',
+      redirect: '/manage/orders',
+      meta: {
+        requiresAuth: true,
+        requiresDriver: true,
+      },
     },
     {
       path: '/manage/users',
@@ -51,6 +55,7 @@ const router = createRouter({
       component: () => import('@/pages/ManageUsersPage.vue'),
       meta: {
         requiresAuth: true,
+        requiresAdmin: true,
       },
     },
     {
@@ -59,6 +64,16 @@ const router = createRouter({
       component: () => import('@/pages/ManageMenuPage.vue'),
       meta: {
         requiresAuth: true,
+        requiresAdmin: true,
+      },
+    },
+    {
+      path: '/manage/orders',
+      name: 'manage orders',
+      component: () => import('@/pages/ManageOrdersPage.vue'),
+      meta: {
+        requiresAuth: true,
+        requiresDriver: true,
       },
     },
     // {
@@ -77,6 +92,10 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login'); // Redirect to login if not authenticated
+  } else if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    next('/menu')
+  } else if (to.meta.requiresDriver && !(authStore.isAdmin || authStore.isDriver)) {
+    next('/menu')
   } else {
     next(); // Proceed as normal
   }

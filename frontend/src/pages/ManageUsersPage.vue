@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { useAdminStore } from '@/stores/admin';
 import type { User } from '@/stores/admin';
+import { useRouter } from 'vue-router';
 
 import EditUserModal from '@/components/EditUserModal.vue';
 
@@ -9,6 +10,8 @@ const adminStore = useAdminStore();
 const selectedUser = ref<User | null>(null);
 const editField = ref<'login' | 'email' | null>(null);
 const isModalOpen = ref(false);
+
+const router = useRouter();
 
 onMounted(() => {
   adminStore.fetchUsers();
@@ -29,6 +32,21 @@ const updateUser = (login: string, updates: Partial<User>) => {
 <template>
   <div class="container mx-auto px-4 py-6">
     <h1 class="mb-4 text-2xl font-bold">Manage Users</h1>
+
+    <div class="mb-4 flex space-x-4">
+      <button
+        @click="router.push('/manage/menu')"
+        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+      >
+        Manage Menu
+      </button>
+      <button
+        @click="router.push('/manage/users')"
+        class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700"
+      >
+        Manage Users
+      </button>
+    </div>
 
     <!-- Search & Sort Controls -->
     <div class="mb-4 flex space-x-4">

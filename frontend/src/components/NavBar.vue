@@ -23,7 +23,7 @@ const handleLogout = async () => {
       <router-link v-if="authStore.isAuthenticated" to="/profile" class="hover:underline"
         >Profile</router-link
       >
-      <router-link v-if="authStore.isAdmin" to="/manage" class="hover:underline"
+      <router-link v-if="authStore.isAdmin || authStore.isDriver" to="/manage" class="hover:underline"
         >Manage</router-link
       >
       <router-link v-if="!authStore.isAuthenticated" to="/login" class="hover:underline"
