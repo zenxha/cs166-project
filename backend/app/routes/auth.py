@@ -10,7 +10,7 @@ from ..database import get_db
 
 SECRET_KEY = "omegalul"
 ALGORITHM = "HS256"  # Algorithm used for JWT encoding/decoding
-TOKEN_EXPIRATION_MINUTES = 30  # Token expiration time in minutes
+TOKEN_EXPIRATION_MINUTES = 30  
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication", "Auth"])
 
@@ -36,21 +36,19 @@ class UserResponse(BaseModel):
     favoriteitems: Optional[str] = None 
 
     class Config:
-        orm_mode = True  # Enable ORM mode to read data as dict
+        orm_mode = True  
 
 @router.post("/register",)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
     try:
-        # Check if user already exists
         existing_user = db.query(User).filter(User.login == user.login).first()
         if existing_user:
             raise HTTPException(status_code=400, detail="Username already exists")
 
-        # Create a new user
         new_user = User(login=user.login, password=user.password, role="customer", phonenum=user.phonenum)
         db.add(new_user)
         db.commit()
-        db.refresh(new_user)  # Refresh to get the newly created user
+        db.refresh(new_user)  
 
         return {"login": new_user.login, "role": new_user.role, "phonenum": new_user.phonenum, "favoriteitems": ""}  # Return the created user
 
