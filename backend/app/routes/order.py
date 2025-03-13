@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from ..models import FoodOrder, ItemsInOrder, Item
 from ..database import get_db
 
-router = APIRouter(prefix="/orders", tags=["Orders"])
+router = APIRouter(prefix="/api/orders", tags=["Orders"])
 
 class OrderItem(BaseModel):
     itemname: str
