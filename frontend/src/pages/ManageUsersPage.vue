@@ -81,7 +81,7 @@ const updateUser = (login: string, updates: Partial<User>) => {
 </div>
 
 <!-- User Table -->
-<table class="w-full border-collapse shadow-md rounded-lg overflow-hidden">
+<table class="w-full border-collapse shadow-lg rounded-lg overflow-hidden">
   <thead>
     <tr class="bg-blue-500 text-white text-left">
       <th class="border border-gray-300 p-3">Login</th>

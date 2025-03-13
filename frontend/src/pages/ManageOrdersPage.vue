@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useOrderAdminStore } from '@/stores/orderAdmin';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
@@ -10,6 +10,13 @@ const router = useRouter();
 
 onMounted(() => {
   orderAdminStore.fetchOrders();
+});
+
+watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async () => {
+  console.log('Changed');
+  console.log(orderAdminStore.orders);
+  console.log(authStore.username);
+  await orderAdminStore.fetchOrders();
 });
 </script>
 
@@ -107,7 +114,7 @@ onMounted(() => {
 
     <!-- Orders Table -->
     <div class="overflow-x-auto">
-      <table class="w-full border-collapse shadow-md rounded-lg overflow-hidden">
+      <table class="w-full border-collapse shadow-lg rounded-lg overflow-hidden">
         <thead>
           <tr class="bg-blue-500 text-white text-left">
             <th class="border border-gray-300 p-3">Order ID</th>

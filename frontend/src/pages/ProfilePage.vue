@@ -3,10 +3,12 @@ import { onMounted, ref, watch } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { useOrderHistoryStore } from '@/stores/orderHistory';
 import { useAuthStore } from '@/stores/auth';
+import { useOrderLookupStore } from '@/stores/orderLookup';
 
 const authStore = useAuthStore();
 const userStore = useUserStore();
 const orderHistoryStore = useOrderHistoryStore();
+const orderLookupStore = useOrderLookupStore();
 
 const phoneNum = ref('');
 const favoriteItem = ref('');
@@ -47,7 +49,7 @@ watch([() => orderHistoryStore.perPage, () => orderHistoryStore.currentPage], as
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-6">
+  <div class="container mx-auto px-4 py-6 overflow-auto">
     <h1 class="mb-4 text-2xl font-bold">Profile</h1>
 
     <div v-if="userStore.profile" class="mb-6 rounded bg-white p-6 shadow-md">
@@ -70,6 +72,32 @@ watch([() => orderHistoryStore.perPage, () => orderHistoryStore.currentPage], as
 
       <!-- Confirmation Message -->
       <p v-if="updateMessage" class="mt-2 text-green-600">{{ updateMessage }}</p>
+    </div>
+
+    <!-- Order Lookup Section -->
+    <h1 class="mb-4 text-2xl font-bold">Order Lookup</h1>
+
+    <div class="mb-6 flex items-center space-x-2">
+      <input v-model="orderLookupStore.searchOrderId" type="text" placeholder="Enter Order ID" class="border p-2 rounded w-1/3" />
+      <button @click="orderLookupStore.fetchOrderById" class="px-4 py-2 bg-blue-500 text-white rounded">Lookup</button>
+    </div>
+
+    <p v-if="orderLookupStore.errorMessage" class="text-red-500">{{ orderLookupStore.errorMessage }}</p>
+
+    <!-- Display Found Order -->
+    <div v-if="orderLookupStore.order" class="border p-4 rounded shadow-md mb-6">
+      <h2 class="text-lg font-bold">Order Details</h2>
+      <p><strong>Order ID:</strong> {{ orderLookupStore.order.orderid }}</p>
+      <p><strong>Total Price:</strong> ${{ orderLookupStore.order.totalprice.toFixed(2) }}</p>
+      <p><strong>Date:</strong> {{ new Date(orderLookupStore.order.ordertimestamp).toLocaleString() }}</p>
+      <p><strong>Status:</strong> {{ orderLookupStore.order.orderstatus.trim() }}</p>
+
+      <h3 class="mt-4 font-bold">Items:</h3>
+      <ul>
+        <li v-for="item in orderLookupStore.order.items" :key="item.itemname">
+          {{ item.itemname }} (x{{ item.quantity }})
+        </li>
+      </ul>
     </div>
 
     <h1 class="mb-4 text-2xl font-bold">Order History</h1>
@@ -114,8 +142,7 @@ watch([() => orderHistoryStore.perPage, () => orderHistoryStore.currentPage], as
       </div>
     </div>
 
-    <!-- Order Table -->
-    <table class="w-full border-collapse overflow-hidden rounded-lg shadow-md">
+    <table class="w-full border-collapse overflow-hidden rounded-lg shadow-lg">
       <thead>
         <tr class="bg-blue-500 text-left text-white">
           <th class="border border-gray-300 p-3">Order ID</th>

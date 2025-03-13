@@ -1,7 +1,10 @@
+import { log } from 'console';
 import { http, HttpResponse } from 'msw';
+import jwt from 'jsonwebtoken';
+import { rollupVersion } from 'vite';
 
 interface LoginRequest {
-  email: string;
+  login: string;
   password: string;
 }
 
@@ -44,6 +47,7 @@ interface User {
   role: 'customer' | 'driver' | 'admin';
   favoriteItem: string;
   phoneNum: string;
+  password: string;
 }
 
 interface OrderReceiptEntry {
@@ -65,25 +69,28 @@ interface Order {
 
 let mockUsers: User[] = [
   {
-    login: 'John Doe',
+    login: 'user',
     email: 'john@example.com',
     role: 'customer',
     favoriteItem: 'Burger',
     phoneNum: '123-456-7890',
+    password: 'user',
   },
   {
-    login: 'Jane Smith',
+    login: 'driver',
     email: 'jane@example.com',
     role: 'driver',
     favoriteItem: 'Burger',
     phoneNum: '987-654-3210',
+    password: 'driver',
   },
   {
-    login: 'Admin User',
+    login: 'admin',
     email: 'admin@example.com',
     role: 'admin',
     favoriteItem: 'Burger',
     phoneNum: '555-555-5555',
+    password: 'admin',
   },
 ];
 
@@ -139,11 +146,11 @@ let mockMenu: MenuItem[] = [
   },
 ];
 
-let mockUserProfile: UserProfile = {
-  email: 'user@example.com',
-  phoneNum: '123-456-7890',
-  favoriteItem: 'Pepperoni Pizza',
-};
+// let mockUserProfile: UserProfile = {
+//   email: 'user@example.com',
+//   phoneNum: '123-456-7890',
+//   favoriteItem: 'Pepperoni Pizza',
+// };
 
 let mockOrders: Order[] = [
   {
@@ -244,6 +251,29 @@ let mockOrders: Order[] = [
   },
 ];
 
+const SECRET_KEY = 'mock_secret_key';
+let activeSessions = new Map<string, string>();
+
+const findUser = (login: string) => mockUsers.find((u) => u.login === login);
+
+const authenticateToken = (request: Request) => {
+  const authHeader = request.headers.get('Authorization');
+  const token = authHeader?.split(' ')[1];
+
+  if (!token) return null;
+
+  try {
+    return jwt.verify(token, SECRET_KEY) as { login: string; role: string };
+  } catch (error) {
+    return null;
+  }
+};
+
+const getUserRole = (login: string) => {
+  const user = mockUsers.find((u) => u.login === login);
+  return user ? user.role : 'customer';
+};
+
 export const handlers = [
   // Mock user register
   http.post('/api/auth/register', async ({ request }) => {
@@ -257,7 +287,6 @@ export const handlers = [
       message: 'Registration successful!',
       user: {
         id: Math.floor(Math.random() * 1000),
-        name,
         email,
         phoneNum,
         role: 'customer',
@@ -268,47 +297,80 @@ export const handlers = [
 
   // Mock user login
   http.post('/api/auth/login', async ({ request }) => {
-    const { email, password } = (await request.json()) as LoginRequest;
+    const { login, password } = (await request.json()) as LoginRequest;
+    const user = mockUsers.find((u) => u.login === login && u.password === password);
 
-    if (email === 'user@example.com' && password === 'password') {
-      return HttpResponse.json({
-        login: 'john_doe',
-        role: 'customer',
-      });
-    } else if (email === 'admin@example.com' && password === 'admin') {
-      return HttpResponse.json({
-        login: 'admin',
-        role: 'admin',
-      });
-    } else if (email === 'driver@example.com' && password === 'driver') {
-      return HttpResponse.json({
-        login: 'driver',
-        role: 'driver',
-      });
+    if (!user) {
+      return new HttpResponse(null, { status: 401, statusText: 'Could not log in' });
     }
 
-    return new HttpResponse(null, { status: 401 });
+    const token = jwt.sign({ login: user.login, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+    activeSessions.set(user.login, token);
+
+    return HttpResponse.json({
+      token,
+      user: {
+        login: user.login,
+        role: user.role,
+      },
+    });
   }),
 
-  http.get('/api/user/profile', () => {
-    return HttpResponse.json(mockUserProfile);
+  http.post('/api/auth/logout', async ({ request }) => {
+    const authHeader = request.headers.get('Authorization');
+    const token = authHeader?.split(' ')[1];
+
+    if (!token) {
+      return new HttpResponse(null, { status: 400, statusText: 'No token provided' });
+    }
+
+    try {
+      const decoded = jwt.verify(token, SECRET_KEY) as { login: string };
+      activeSessions.delete(decoded.login);
+      return new HttpResponse(null, { status: 200 });
+    } catch (error) {
+      return new HttpResponse(null, { status: 401, statusText: 'Invalid token' });
+    }
+  }),
+
+  http.get('/api/user/profile', async ({ request }) => {
+    const decoded = authenticateToken(request);
+    if (!decoded) {
+      return new HttpResponse(null, { status: 401, statusText: 'Unauthorized' });
+    }
+
+    const user = findUser(decoded.login);
+    if (!user) {
+      return new HttpResponse(null, { status: 404, statusText: 'User Not Found' });
+    }
+
+    return HttpResponse.json({
+      email: user.email,
+      role: user.role,
+      favoriteItem: user.favoriteItem,
+      phoneNum: user.phoneNum,
+    });
   }),
 
   http.put('/api/user/profile', async ({ request }) => {
+    const decoded = authenticateToken(request);
+    if (!decoded) {
+      return new HttpResponse(null, { status: 401, statusText: 'Unauthorized' });
+    }
+
+    let user = findUser(decoded.login);
+    if (!user) {
+      return new HttpResponse(null, { status: 404, statusText: 'User Not Found' });
+    }
+
+    // Parse update request
     const updatedFields = (await request.json()) as Partial<UserProfile>;
+    user = { ...user, ...updatedFields };
 
-    // Create a new object instead of mutating the original one
-    const updatedProfile: UserProfile = {
-      ...mockUserProfile,
-      ...Object.fromEntries(
-        Object.entries(updatedFields).filter(([key]) => key in mockUserProfile),
-      ),
-    };
+    // Update in mock database
+    mockUsers = mockUsers.map((u) => (u.login === decoded.login ? user : u));
 
-    // Optionally, update mockUserProfile if mutability is required
-    Object.assign(mockUserProfile, updatedProfile);
-
-    return HttpResponse.json({ message: 'Profile updated successfully!', updatedProfile });
+    return HttpResponse.json({ message: 'Profile updated successfully!', updatedProfile: user });
   }),
 
   // Mock menu items
@@ -378,17 +440,34 @@ export const handlers = [
   }),
 
   http.post('/api/order', async ({ request }) => {
-    const { storeId, items } = (await request.json()) as OrderRequest;
+    const { storeId, items, login } = (await request.json()) as {
+      storeId: number;
+      items: { itemname: string; quantity: number; price: number }[];
+      login: string;
+    };
 
-    if (!storeId || items.length === 0) {
+    if (!storeId || !login || items.length === 0) {
       return new HttpResponse(null, { status: 400 });
     }
 
     const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    console.log('Received post to order, computed totalPrice to be', totalPrice);
+
+    const newOrder: Order = {
+      orderid: mockOrders.length + 1, // Generate a new order ID
+      login,
+      storeid: storeId,
+      totalprice: totalPrice,
+      ordertimestamp: new Date().toISOString(),
+      orderstatus: 'Pending', // Default status for a new order
+      items: items.map(({ itemname, quantity }) => ({ itemname, quantity })),
+    };
+
+    mockOrders.push(newOrder); // Insert into mockOrders array
 
     return HttpResponse.json({
-      orderId: Math.floor(Math.random() * 10000),
-      totalPrice,
+      orderId: newOrder.orderid,
+      totalprice: newOrder.totalprice,
       message: 'Order placed successfully!',
     });
   }),
@@ -413,9 +492,25 @@ export const handlers = [
     });
   }),
 
+  http.get('/api/orders/:id', async ({ params }) => {
+    const { id } = params;
+    console.log('Looking up order with ID:', id);
+
+    const order = mockOrders.find((o) => o.orderid === Number(id));
+    if (order) {
+      console.log('Found order:', order);
+      return HttpResponse.json(order);
+    }
+
+    console.log('Order not found');
+    return new HttpResponse(null, { status: 404 });
+  }),
+
   http.put('/api/orders/:id', async ({ params, request }) => {
     const { id } = params;
+    console.log('Looking up order', id);
     const { orderstatus } = (await request.json()) as { orderstatus: OrderStatus };
+    console.log('Backend handler heard request for orders/id with id as', id);
 
     const orderIndex = mockOrders.findIndex((o) => o.orderid === Number(id));
     if (orderIndex !== -1) {
