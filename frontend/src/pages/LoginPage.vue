@@ -7,17 +7,13 @@ import { useRouter } from 'vue-router';
 const authStore = useAuthStore();
 const router = useRouter();
 
-const email = ref('');
+const username = ref('');
 const password = ref('');
 const errorMessage = ref('');
 
 const login = async () => {
   try {
-    const response = await axios.post('/api/auth/login', {
-      email: email.value,
-      password: password.value,
-    });
-    authStore.login(response.data);
+    authStore.login(username.value, password.value);
     router.push('/');
   } catch (error) {
     errorMessage.value = 'Invalid login credentials';
@@ -27,14 +23,14 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-grow flex-col items-center py-6">
+  <div class="flex min-h-[calc(100vh-4rem)] flex-grow flex-col items-center py-6">
     <div class="w-96 rounded-lg bg-white p-6 shadow-md">
       <h2 class="mb-4 text-xl font-bold">Login</h2>
       <form @submit.prevent="login">
         <input
-          v-model="email"
-          type="email"
-          placeholder="Email"
+          v-model="username"
+          type="text"
+          placeholder="Login"
           class="mb-2 w-full rounded border p-2"
           required
         />
