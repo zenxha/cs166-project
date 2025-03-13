@@ -30,17 +30,20 @@ const login = async () => {
   <div class="flex min-h-screen flex-grow flex-col items-center py-6">
     <div class="w-96 rounded-lg bg-white p-6 shadow-md">
       <h2 class="mb-4 text-xl font-bold">Login</h2>
-      <input
+      <form @submit.prevent="login">
+        <input
         v-model="email"
         type="email"
         placeholder="Email"
         class="mb-2 w-full rounded border p-2"
+        required
       />
       <input
         v-model="password"
         type="password"
         placeholder="Password"
         class="mb-2 w-full rounded border p-2"
+        required
       />
       <button
         @click="login"
@@ -48,6 +51,7 @@ const login = async () => {
       >
         Login
       </button>
+      </form>
 
       <p v-if="errorMessage" class="mt-2 text-red-500">{{ errorMessage }}</p>
 

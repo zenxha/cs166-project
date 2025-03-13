@@ -31,7 +31,6 @@ const handleOrder = async () => {
   orderMessage.value = result.message;
 };
 
-console.log(orderStore.stores);
 </script>
 
 <template>

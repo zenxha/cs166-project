@@ -5,7 +5,7 @@ import axios from 'axios';
 export type User = {
   login: string;
   email: string;
-  role: 'customer' | 'manager' | 'admin';
+  role: 'customer' | 'driver' | 'admin';
   favoriteItem: string;
   phoneNum: string;
 };
@@ -27,8 +27,6 @@ export const useAdminStore = defineStore('admin', () => {
 
   async function updateUser(login: string, updates: Partial<User>) {
     try {
-      console.log('---------------------');
-      console.log(login, updates);
       const response = await axios.put(`/api/users/${login}`, updates);
       const index = users.value.findIndex((u) => u.login === login);
       if (index !== -1) users.value[index] = response.data;

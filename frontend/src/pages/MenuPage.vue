@@ -9,6 +9,7 @@ const menuStore = useMenuStore();
 onMounted(() => {
   menuStore.fetchMenu();
 });
+
 </script>
 
 <template>
@@ -24,6 +25,13 @@ onMounted(() => {
         <option value="Side">Sides</option>
       </select>
 
+      <input
+        v-model.number="menuStore.maxPrice"
+        type="number"
+        placeholder="Max Price"
+        class="rounded border p-2 w-32"
+      />
+
       <select v-model="menuStore.sortOrder" class="rounded border p-2">
         <option :value="null">No Sorting</option>
         <option value="asc">Price: Low to High</option>
@@ -33,7 +41,7 @@ onMounted(() => {
 
     <!-- Menu List -->
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <MenuItemCard v-for="item in menuStore.filteredItems" :key="item.id" :item="item" />
+      <MenuItemCard v-for="item in menuStore.items" :key="item.id" :item="item" />
     </div>
   </div>
 </template>
