@@ -228,8 +228,10 @@ export const handlers = [
     return HttpResponse.json(mockUsers);
   }),
 
-  http.put('/api/users/:id', async ({ params, request }) => {
+  http.put('/api/users/:login', async ({ params, request }) => {
     const { login } = params;
+    console.log(login);
+    console.log('Above is in handler');
     const updates = (await request.json()) as Partial<Omit<User, 'password'>>;
 
     // Find user & update fields (except password)

@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="flex flex-col h-screen bg-gray-100">
+  <div class="flex h-screen flex-col bg-gray-100">
     <NavBar />
     <main class="flex-1 overflow-hidden">
       <router-view />

@@ -1,35 +1,51 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useAdminStore } from '@/stores/admin';
 
+import EditUserModal from '@/components/EditUserModal.vue';
+
 const adminStore = useAdminStore();
+const selectedUser = ref<User | null>(null);
+const editField = ref<'name' | 'email' | null>(null);
+const isModalOpen = ref(false);
 
 onMounted(() => {
   adminStore.fetchUsers();
 });
+
+const openEditModal = (user: User, field: 'name' | 'email') => {
+  selectedUser.value = user;
+  editField.value = field;
+  isModalOpen.value = true;
+};
+
+const updateUser = (id: number, updates: Partial<User>) => {
+  adminStore.updateUser(id, updates);
+  isModalOpen.value = false;
+};
 </script>
 
 <template>
   <div class="container mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4">Manage Users</h1>
+    <h1 class="mb-4 text-2xl font-bold">Manage Users</h1>
 
     <!-- Search & Sort Controls -->
-    <div class="flex space-x-4 mb-4">
+    <div class="mb-4 flex space-x-4">
       <input
         v-model="adminStore.searchQuery"
         type="text"
         placeholder="Search users..."
-        class="p-2 border rounded w-1/3"
+        class="w-1/3 rounded border p-2"
       />
 
-      <select v-model="adminStore.sortField" class="p-2 border rounded">
+      <select v-model="adminStore.sortField" class="rounded border p-2">
         <option :value="null">Sort By</option>
         <option value="login">Login</option>
         <option value="email">Email</option>
         <option value="role">Role</option>
       </select>
 
-      <select v-model="adminStore.sortOrder" class="p-2 border rounded">
+      <select v-model="adminStore.sortOrder" class="rounded border p-2">
         <option :value="null">Order</option>
         <option value="asc">Ascending</option>
         <option value="desc">Descending</option>
@@ -48,14 +64,18 @@ onMounted(() => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in adminStore.filteredUsers" :key="user.id">
-          <td class="border border-gray-300 p-2">{{ user.Login }}</td>
-          <td class="border border-gray-300 p-2">{{ user.email }}</td>
+        <tr v-for="user in adminStore.filteredUsers" :key="user.login">
+          <td class="border border-gray-300 p-2" @click="openEditModal(user, 'login')">
+            {{ user.login }}
+          </td>
+          <td class="border border-gray-300 p-2" @click="openEditModal(user, 'email')">
+            {{ user.email }}
+          </td>
           <td class="border border-gray-300 p-2">
             <select
               v-model="user.role"
-              @change="adminStore.updateUser(user.id, { role: user.role })"
-              class="p-1 border rounded"
+              @change="adminStore.updateUser(user.login, { role: user.role })"
+              class="rounded border p-1"
             >
               <option value="customer">Customer</option>
               <option value="manager">Manager</option>
@@ -65,14 +85,14 @@ onMounted(() => {
           <td class="border border-gray-300 p-2">
             <input
               v-model="user.phoneNum"
-              @blur="adminStore.updateUser(user.id, { phoneNum: user.phoneNum })"
-              class="p-1 border rounded w-full"
+              @blur="adminStore.updateUser(user.login, { phoneNum: user.phoneNum })"
+              class="w-full rounded border p-1"
             />
           </td>
           <td class="border border-gray-300 p-2">
             <button
-              @click="adminStore.updateUser(user.id, { role: 'customer' })"
-              class="text-blue-500"
+              @click="adminStore.updateUser(user.login, { role: 'customer' })"
+              class="cursor-pointer text-blue-500 hover:underline"
             >
               Reset Role
             </button>
@@ -80,5 +100,16 @@ onMounted(() => {
         </tr>
       </tbody>
     </table>
+
+    <!-- Edit User Modal -->
+    <!-- @updateUser (event from component) = "updateUser (function from above)" -->
+    <EditUserModal
+      v-if="isModalOpen"
+      :user="selectedUser"
+      :field="editField!"
+      :isOpen="isModalOpen"
+      @updateUser="updateUser"
+      @close="isModalOpen = false"
+    />
   </div>
 </template>

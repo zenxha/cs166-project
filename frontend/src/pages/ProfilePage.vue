@@ -34,23 +34,23 @@ const updateProfile = async () => {
 
 <template>
   <div class="container mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4">Profile</h1>
+    <h1 class="mb-4 text-2xl font-bold">Profile</h1>
 
-    <div v-if="userStore.profile" class="bg-white p-6 rounded shadow-md">
+    <div v-if="userStore.profile" class="rounded bg-white p-6 shadow-md">
       <p><strong>Name:</strong> {{ userStore.profile.name }}</p>
       <p><strong>Email:</strong> {{ userStore.profile.email }}</p>
 
       <!-- Editable Fields -->
       <div class="mt-4">
         <label class="block font-semibold">Phone Number:</label>
-        <input v-model="phoneNum" type="text" class="w-full p-2 border rounded" />
+        <input v-model="phoneNum" type="text" class="w-full rounded border p-2" />
 
-        <label class="block font-semibold mt-2">Favorite Item:</label>
-        <input v-model="favoriteItem" type="text" class="w-full p-2 border rounded" />
+        <label class="mt-2 block font-semibold">Favorite Item:</label>
+        <input v-model="favoriteItem" type="text" class="w-full rounded border p-2" />
       </div>
 
       <!-- Update Profile Button -->
-      <button @click="updateProfile" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded w-full">
+      <button @click="updateProfile" class="mt-4 w-full rounded bg-blue-500 px-4 py-2 text-white">
         Update Profile
       </button>
 

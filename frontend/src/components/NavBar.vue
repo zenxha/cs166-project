@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
+
 const authStore = useAuthStore();
+const router = useRouter();
+
+const handleLogout = async () => {
+  authStore.logout();
+};
 </script>
 
 <template>
-  <nav class="bg-blue-600 text-white p-4 flex justify-between">
-    <div class="font-bold text-lg">Kessoku Pizza</div>
+  <nav class="flex justify-between bg-blue-600 p-4 text-white">
+    <div class="text-lg font-bold">Kessoku Pizza</div>
     <div class="space-x-4">
       <router-link to="/" class="hover:underline">Home</router-link>
       <router-link to="/menu" class="hover:underline">Menu</router-link>
@@ -15,11 +22,13 @@ const authStore = useAuthStore();
       <router-link v-if="authStore.isAuthenticated" to="/profile" class="hover:underline"
         >Profile</router-link
       >
-      <router-link v-if="authStore.isAdmin" to="/admin" class="hover:underline">Admin</router-link>
+      <router-link v-if="authStore.isAdmin" to="/manage" class="hover:underline"
+        >Manage</router-link
+      >
       <router-link v-if="!authStore.isAuthenticated" to="/login" class="hover:underline"
         >Login</router-link
       >
-      <button v-if="authStore.isAuthenticated" @click="authStore.logout()" class="hover:underline">
+      <button v-if="authStore.isAuthenticated" @click="handleLogout()" class="hover:underline">
         Logout
       </button>
     </div>

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import { useUserStore } from './user';
+import { useGlobalStore } from './global';
 
 export interface UserData {
   role: string;
@@ -16,10 +16,10 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function logout() {
-    activeUser.value = null;
+    const globalStore = useGlobalStore();
+    globalStore.triggerLogout();
 
-    const userStore = useUserStore();
-    userStore.onLogout();
+    activeUser.value = null;
   }
 
   return { user: activeUser, isAuthenticated, isAdmin, login, logout };
