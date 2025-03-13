@@ -51,7 +51,7 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db)):
             storeid=order.storeid,
             totalprice=total_price,
             ordertimestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),  # Set the current timestamp
-            orderstatus="Pending"  # Default status
+            orderstatus="incomplete"  # Default status
         )
 
         db.add(new_order)
@@ -150,7 +150,7 @@ def get_all_orders(db: Session = Depends(get_db), login: Optional[str] = None, o
 class OrderStatusUpdate(BaseModel):
     status: str
 
-@router.put("/{orderid}/status", response_model=OrderCreate)
+@router.put("/{orderid}/status", response_model=OrderResponse)
 def update_order_status(orderid: int, status_update: OrderStatusUpdate, db: Session = Depends(get_db)):
     try:
         if status_update.status not in ["complete", "incomplete"]:
