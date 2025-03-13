@@ -1,0 +1,7 @@
+itemName,ingredients,typeOfItem,price,description
+Burger,"Beef patty, lettuce, tomato, cheese",Main,9.99,"Classic beef burger"
+Pizza,"Tomato sauce, mozzarella, pepperoni",Main,12.50,"Pepperoni pizza"
+Pasta,"Penne, tomato sauce, basil",Main,8.75,"Italian-style pasta"
+Sushi,"Rice, fish, seaweed",Main,15.00,"Assorted sushi rolls"
+Salad,"Lettuce, tomato, cucumber, dressing",Side,5.50,"Fresh garden salad"
+Taco,"Beef, lettuce, cheese, tortilla",Main,7.25,"Crunchy beef taco"

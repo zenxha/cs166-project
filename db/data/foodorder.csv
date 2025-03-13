@@ -1,0 +1,5 @@
+orderID,login,storeID,totalPrice,orderTimestamp,orderStatus
+1,john_doe,1,22.49,"2023-10-01 12:30:00","Delivered"
+2,jane_smith,3,24.25,"2023-10-02 14:15:00","In Progress"
+3,mike_jones,2,12.75,"2023-10-03 18:45:00","Pending"
+4,john_doe,4,15.00,"2023-10-04 19:00:00","Cancelled"
