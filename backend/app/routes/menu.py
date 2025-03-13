@@ -60,7 +60,7 @@ class MenuItemUpdate(BaseModel):
     class Config:
         from_attributes = True
 
-@router.post("/")
+@router.post("/", response_model=MenuItemCreate)
 def create_menu_item(menu_item: MenuItemCreate, db: Session = Depends(get_db)):
 
     existing_item = db.query(Item).filter(Item.itemname == menu_item.itemname).first()
