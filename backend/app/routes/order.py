@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional
 from datetime import datetime
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import SQLAlchemyError
 from pydantic import BaseModel
 from ..models import FoodOrder, ItemsInOrder, Item
@@ -26,7 +26,7 @@ class OrderCreate(BaseModel):
         }
 
 class OrderResponse(BaseModel):
-    orderid: Optional[int] = None 
+    orderid: int
     login: str
     storeid: int
     totalprice: float
@@ -41,7 +41,7 @@ class OrderResponse(BaseModel):
             datetime: lambda v: v.strftime('%Y-%m-%d %H:%M:%S')
         }
 
-@router.post("/", response_model=OrderResponse)
+@router.post("/create/", response_model=OrderResponse)
 def create_order(order: OrderCreate, db: Session = Depends(get_db)):
     try:
         # Create a new food order
@@ -50,7 +50,7 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db)):
             login=order.login,
             storeid=order.storeid,
             totalprice=total_price,
-            ordertimestamp=datetime.now(),
+            ordertimestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),  # Set the current timestamp
             orderstatus="Pending"  # Default status
         )
 
@@ -93,18 +93,19 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Error: " + str(e))
     
 
-@router.get("/history/", response_model=List[OrderCreate])
-def get_all_orders(db: Session = Depends(get_db), login: Optional[str] = None, limit: Optional[int] = None):
+@router.get("/", response_model=List[OrderResponse])
+def get_all_orders(db: Session = Depends(get_db), login: Optional[str] = None, orderid: Optional[int] = None,limit: Optional[int] = None):
     try:
-        query = db.query(FoodOrder)
+        query = db.query(FoodOrder).options(joinedload(FoodOrder.items))
         if login:
             query = query.filter(FoodOrder.login == login)
+        if orderid:
+            query = query.filter(FoodOrder.orderid == orderid)
 
         orders = query.all()
-        res = []
         
+        res = []
         for order in orders:
-            items = db.query(ItemsInOrder).filter(ItemsInOrder.orderid == order.orderid).all()
             res.append({
                 "orderid": order.orderid,
                 "login": order.login,
@@ -112,7 +113,7 @@ def get_all_orders(db: Session = Depends(get_db), login: Optional[str] = None, l
                 "totalprice": order.totalprice,
                 "ordertimestamp": order.ordertimestamp.strftime('%Y-%m-%d %H:%M:%S'),
                 "orderstatus": order.orderstatus,
-                "items": [{"itemname": item.itemname, "quantity": item.quantity} for item in items]
+                "items": [{"itemname": item.itemname, "quantity": item.quantity} for item in order.items]
             })
 
         if limit:
@@ -124,26 +125,27 @@ def get_all_orders(db: Session = Depends(get_db), login: Optional[str] = None, l
     except Exception as e:
         raise HTTPException(status_code=400, detail="Error: " + str(e))
     
-@router.get("/{orderid}", response_model=OrderCreate)
-def get_order_by_id(orderid: int, db: Session = Depends(get_db)):
-    try:
-        order = db.query(FoodOrder).filter(FoodOrder.orderid == orderid).first()
-        if not order:
-            raise HTTPException(status_code=404, detail="Order not found")
-        items = db.query(ItemsInOrder).filter(ItemsInOrder.orderid == orderid).all()
-        return {
-            "orderid": order.orderid,
-            "login": order.login,
-            "storeid": order.storeid,
-            "totalprice": order.totalprice,
-            "ordertimestamp": order.ordertimestamp.strftime('%Y-%m-%d %H:%M:%S'),
-            "orderstatus": order.orderstatus,
-            "items": [{"itemname": item.itemname, "quantity": item.quantity} for item in items]
-        }
-    except SQLAlchemyError as e:
-        raise HTTPException(status_code=500, detail="Database error: " + str(e))
-    except Exception as e:
-        raise HTTPException(status_code=400, detail="Error: " + str(e))
+     
+# @router.get("/get/{orderid}", response_model=OrderResponse)
+# def get_order_by_id(orderid: int, db: Session = Depends(get_db)):
+#     try:
+#         order = db.query(FoodOrder).filter(FoodOrder.orderid == orderid).first()
+#         if not order:
+#             raise HTTPException(status_code=404, detail="Order not found")
+#         items = db.query(ItemsInOrder).filter(ItemsInOrder.orderid == orderid).all()
+#         return {
+#             "orderid": order.orderid,
+#             "login": order.login,
+#             "storeid": order.storeid,
+#             "totalprice": order.totalprice,
+#             "ordertimestamp": order.ordertimestamp.strftime('%Y-%m-%d %H:%M:%S'),
+#             "orderstatus": order.orderstatus,
+#             "items": [{"itemname": item.itemname, "quantity": item.quantity} for item in items]
+#         }
+#     except SQLAlchemyError as e:
+#         raise HTTPException(status_code=500, detail="Database error: " + str(e))
+#     except Exception as e:
+#         raise HTTPException(status_code=400, detail="Error: " + str(e))
 
 class OrderStatusUpdate(BaseModel):
     status: str

@@ -2,7 +2,6 @@ from .database import Base
 from sqlalchemy import Column, Integer, String, Float, Text, DateTime, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 
-
 # Users table
 class User(Base):
     __tablename__ = "users"
@@ -38,7 +37,7 @@ class Store(Base):
     city = Column(String(50), nullable=False)
     state = Column(String(60), nullable=False)
     isopen = Column(String(60), nullable=False)
-    reviewscore = Column(Float)
+    revie_score = Column(Float)
 
     # Relationship to FoodOrder
     orders = relationship("FoodOrder", back_populates="store")
@@ -64,7 +63,7 @@ class ItemsInOrder(Base):
     __tablename__ = "itemsinorder"
     
     orderid = Column(Integer, ForeignKey("foodorder.orderid", ondelete="CASCADE"), primary_key=True)
-    itemname = Column(String(50), ForeignKey("items.itemname"), primary_key=True)
+    itemname = Column(String(50), ForeignKey("items.itemname", ondelete="CASCADE"), primary_key=True)
     quantity = Column(Integer, nullable=False)
 
     # Relationships
