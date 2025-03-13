@@ -65,10 +65,16 @@ const updateUser = (login: string, updates: Partial<User>) => {
       </thead>
       <tbody>
         <tr v-for="user in adminStore.filteredUsers" :key="user.login">
-          <td class="border border-gray-300 p-2" @click="openEditModal(user, 'login')">
+          <td
+            class="cursor-pointer border border-gray-300 p-2 hover:underline"
+            @click="openEditModal(user, 'login')"
+          >
             {{ user.login }}
           </td>
-          <td class="border border-gray-300 p-2" @click="openEditModal(user, 'email')">
+          <td
+            class="cursor-pointer border border-gray-300 p-2 hover:underline"
+            @click="openEditModal(user, 'email')"
+          >
             {{ user.email }}
           </td>
           <td class="border border-gray-300 p-2">
@@ -82,12 +88,18 @@ const updateUser = (login: string, updates: Partial<User>) => {
               <option value="admin">Admin</option>
             </select>
           </td>
-          <td class="border border-gray-300 p-2">
+          <!-- <td class="border border-gray-300 p-2">
             <input
               v-model="user.phoneNum"
               @blur="adminStore.updateUser(user.login, { phoneNum: user.phoneNum })"
               class="w-full rounded border p-1"
             />
+          </td> -->
+          <td
+            class="cursor-pointer border border-gray-300 p-2 hover:underline"
+            @click="openEditModal(user, 'phoneNum')"
+          >
+            {{ user.phoneNum }}
           </td>
           <td class="border border-gray-300 p-2">
             <button
