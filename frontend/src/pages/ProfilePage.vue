@@ -8,6 +8,9 @@ const favoriteItem = ref('');
 const updateMessage = ref<string | null>(null);
 
 onMounted(async () => {
+  phoneNum.value = '';
+  favoriteItem.value = '';
+
   await userStore.fetchProfile();
   if (userStore.profile) {
     phoneNum.value = userStore.profile.phoneNum;
@@ -16,8 +19,16 @@ onMounted(async () => {
 });
 
 const updateProfile = async () => {
+  // Prevent toctou attack
+  const currentUserId = userStore.profile?.id;
   await userStore.updateProfile(phoneNum.value, favoriteItem.value);
-  updateMessage.value = 'Profile updated successfully!';
+
+  // Ensure update applies to the same user
+  if (userStore.profile?.id === currentUserId) {
+    updateMessage.value = 'Profile updated successfully!';
+  } else {
+    updateMessage.value = null; // Clear if user changed mid-update
+  }
 };
 </script>
 

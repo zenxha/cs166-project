@@ -1,8 +1,8 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw';
 
 interface LoginRequest {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 interface OrderItem {
@@ -33,7 +33,99 @@ interface UserProfile {
   favoriteItem: string;
 }
 
-let mockUserProfile : UserProfile = {
+interface MenuItem {
+  itemname: string;
+  ingredients: string;
+  price: number;
+  typeofitem: string;
+  description: string;
+}
+
+interface User {
+  login: string;
+  email: string;
+  role: 'customer' | 'manager' | 'admin';
+  favoriteItem: string;
+  phoneNum: string;
+}
+
+let mockUsers: User[] = [
+  {
+    login: 'John Doe',
+    email: 'john@example.com',
+    role: 'customer',
+    favoriteItem: 'Burger',
+    phoneNum: '123-456-7890',
+  },
+  {
+    login: 'Jane Smith',
+    email: 'jane@example.com',
+    role: 'manager',
+    favoriteItem: 'Burger',
+    phoneNum: '987-654-3210',
+  },
+  {
+    login: 'Admin User',
+    email: 'admin@example.com',
+    role: 'admin',
+    favoriteItem: 'Burger',
+    phoneNum: '555-555-5555',
+  },
+];
+
+let mockMenu: MenuItem[] = [
+  {
+    itemname: 'Burger',
+    ingredients: 'Beef patty, lettuce, tomato, cheese',
+    price: 9.99,
+    typeofitem: 'Main',
+    description: 'Classic beef burger',
+  },
+  {
+    itemname: 'Pizza',
+    ingredients: 'Tomato sauce, mozzarella, pepperoni',
+    price: 12.5,
+    typeofitem: 'Main',
+    description: 'Pepperoni pizza',
+  },
+  {
+    itemname: 'Pasta',
+    ingredients: 'Penne, tomato sauce, basil',
+    price: 8.75,
+    typeofitem: 'Main',
+    description: 'Italian-style pasta',
+  },
+  {
+    itemname: 'Sushi',
+    ingredients: 'Rice, fish, seaweed',
+    price: 15.0,
+    typeofitem: 'Main',
+    description: 'Assorted sushi rolls',
+  },
+  {
+    itemname: 'Salad',
+    ingredients: 'Lettuce, tomato, cucumber, dressing',
+    price: 5.5,
+    typeofitem: 'Side',
+    description: 'Fresh garden salad',
+  },
+  {
+    itemname: 'Taco',
+    ingredients: 'Beef, lettuce, cheese, tortilla',
+    price: 7.25,
+    typeofitem: 'Main',
+    description: 'Crunchy beef taco',
+  },
+  {
+    itemname: 'Fries',
+    ingredients: 'Potatoes, salt',
+    price: 2.99,
+    typeofitem: 'Sides',
+    description: 'any potatoers in chat',
+  },
+];
+
+let mockUserProfile: UserProfile = {
   id: 1,
   name: 'John Doe',
   email: 'user@example.com',
@@ -65,19 +157,20 @@ export const handlers = [
 
   // Mock user login
   http.post('/api/auth/login', async ({ request }) => {
-    console.log("Got auth login request!")
-    const { email, password } = (await request.json()) as LoginRequest
+    console.log('Got auth login request!');
+    const { email, password } = (await request.json()) as LoginRequest;
 
     if (email === 'user@example.com' && password === 'password') {
       return HttpResponse.json({
-        id: 1,
-        fname: 'John',
-        lname: 'Doe',
         role: 'customer',
-      })
+      });
+    } else if (email === 'admin@example.com' && password === 'admin') {
+      return HttpResponse.json({
+        role: 'admin',
+      });
     }
 
-    return new HttpResponse(null, { status: 401 })
+    return new HttpResponse(null, { status: 401 });
   }),
 
   http.get('/api/user/profile', () => {
@@ -85,14 +178,14 @@ export const handlers = [
   }),
 
   http.put('/api/user/profile', async ({ request }) => {
-    const updatedFields = await request.json() as Partial<UserProfile>;
+    const updatedFields = (await request.json()) as Partial<UserProfile>;
 
     // Create a new object instead of mutating the original one
     const updatedProfile: UserProfile = {
-        ...mockUserProfile,
-        ...Object.fromEntries(
-            Object.entries(updatedFields).filter(([key]) => key in mockUserProfile)
-        )
+      ...mockUserProfile,
+      ...Object.fromEntries(
+        Object.entries(updatedFields).filter(([key]) => key in mockUserProfile),
+      ),
     };
 
     // Optionally, update mockUserProfile if mutability is required
@@ -101,19 +194,13 @@ export const handlers = [
     return HttpResponse.json({ message: 'Profile updated successfully!', updatedProfile });
   }),
 
-
   // Mock menu items
   http.get('/api/menu', () => {
-    return HttpResponse.json([
-      { id: 1, name: 'Pepperoni Pizza', type: 'main', price: 12.99 },
-      { id: 2, name: 'Cheeseburger', type: 'main', price: 10.99 },
-      { id: 3, name: 'Coke', type: 'drink', price: 1.99 },
-      { id: 4, name: 'Fries', type: 'side', price: 3.49 },
-      { id: 5, name: 'Margherita Pizza', type: 'main', price: 11.99 },
-    ])
+    return HttpResponse.json(mockMenu);
   }),
 
   http.get('/api/stores', () => {
+    console.log('Got stores request?');
     return HttpResponse.json([
       { id: 1, name: 'Downtown Store', location: '123 Main St', reviewScore: 4.5, isOpen: true },
       { id: 2, name: 'Uptown Store', location: '456 High St', reviewScore: 4.2, isOpen: true },
@@ -122,7 +209,7 @@ export const handlers = [
   }),
 
   http.post('/api/order', async ({ request }) => {
-    const { storeId, items } = await request.json() as OrderRequest;
+    const { storeId, items } = (await request.json()) as OrderRequest;
 
     if (!storeId || items.length === 0) {
       return new HttpResponse(null, { status: 400 });
@@ -137,5 +224,22 @@ export const handlers = [
     });
   }),
 
+  http.get('/api/users', () => {
+    return HttpResponse.json(mockUsers);
+  }),
+
+  http.put('/api/users/:id', async ({ params, request }) => {
+    const { login } = params;
+    const updates = (await request.json()) as Partial<Omit<User, 'password'>>;
+
+    // Find user & update fields (except password)
+    const userIndex = mockUsers.findIndex((u) => u.login === login);
+    if (userIndex !== -1) {
+      mockUsers[userIndex] = { ...mockUsers[userIndex], ...updates };
+      return HttpResponse.json(mockUsers[userIndex]);
+    }
+    return new HttpResponse(null, { status: 404 });
+  }),
+
   // http.get('/favicon.ico', () => new HttpResponse(null, { status: 204 })),
-]
+];

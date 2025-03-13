@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const router = createRouter({
@@ -29,12 +29,38 @@ const router = createRouter({
       path: '/order',
       name: 'order',
       component: () => import('@/pages/PlaceOrderPage.vue'),
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/profile',
       name: 'profile',
       component: () => import('@/pages/ProfilePage.vue'),
+      meta: {
+        requiresAuth: true,
+      },
     },
+    {
+      path: '/manage',
+      redirect: '/manage/users',
+    },
+    {
+      path: '/manage/users',
+      name: 'manage users',
+      component: () => import('@/pages/ManageUsersPage.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    // {
+    //   path: '/manage/menu',
+    //   name: 'manage menu',
+    //   component: () => import('@/pages/ManageMenuPage.vue'),
+    //   meta: {
+    //     requiresAuth: true,
+    //   }
+    // },
     // {
     //   path: '/about',
     //   name: 'about',
@@ -44,7 +70,7 @@ const router = createRouter({
     //   component: () => import('../views/AboutView.vue'),
     // },
   ],
-})
+});
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
@@ -54,6 +80,6 @@ router.beforeEach((to, from, next) => {
   } else {
     next(); // Proceed as normal
   }
-})
+});
 
-export default router
+export default router;

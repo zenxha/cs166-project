@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { MenuItem } from '@/stores/menu'
+import type { MenuItem } from '@/stores/menu';
 
-defineProps<{ item: MenuItem; buttonLabel?: string; buttonAction?: (item: MenuItem) => void }>()
+defineProps<{ item: MenuItem; buttonLabel?: string; buttonAction?: (item: MenuItem) => void }>();
 </script>
 
 <template>
   <div class="bg-white p-4 shadow rounded">
-    <h2 class="text-lg font-semibold">{{ item.name }}</h2>
-    <p class="text-sm text-gray-600">Type: {{ item.type }}</p>
+    <h2 class="text-lg font-semibold">{{ item.itemname }}</h2>
+    <p class="text-sm text-gray-600">Type: {{ item.typeofitem }}</p>
     <p class="text-md font-bold">${{ item.price.toFixed(2) }}</p>
 
     <!-- Conditionally show button -->

@@ -34,5 +34,9 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  return { profile, fetchProfile, updateProfile };
+  function onLogout() {
+    profile.value = null;
+  }
+
+  return { profile, fetchProfile, updateProfile, onLogout };
 });

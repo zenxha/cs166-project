@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { useMenuStore } from '@/stores/menu';
 import { useOrderStore } from '@/stores/order';
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth';
 
 import MenuItemCard from '@/components/MenuItemCard.vue';
 import CartSummary from '@/components/CartSummary.vue';
@@ -26,6 +26,8 @@ const handleOrder = async () => {
   const result = await orderStore.placeOrder();
   orderMessage.value = result.message;
 };
+
+console.log(orderStore.stores);
 </script>
 
 <template>
@@ -34,7 +36,8 @@ const handleOrder = async () => {
 
     <!-- Show warning if user is not logged in -->
     <p v-if="!authStore.isAuthenticated" class="text-red-500 font-semibold mb-4">
-      You must be logged in to place an order. <router-link to="/login" class="underline">Login here</router-link>
+      You must be logged in to place an order.
+      <router-link to="/login" class="underline">Login here</router-link>
     </p>
 
     <!-- Store Selection -->
@@ -62,13 +65,16 @@ const handleOrder = async () => {
 
     <!-- Place Order Button -->
     <button
-    @click="handleOrder"
-    :disabled="!authStore.isAuthenticated"
-    class="mt-4 px-4 py-2 bg-green-500 text-white rounded w-full">
+      @click="handleOrder"
+      :disabled="!authStore.isAuthenticated"
+      class="mt-4 px-4 py-2 bg-green-500 text-white rounded w-full"
+    >
       Place Order
     </button>
 
     <!-- Order Confirmation -->
-    <p v-if="orderMessage" class="mt-2 text-center text-lg font-semibold text-green-600">{{ orderMessage }}</p>
+    <p v-if="orderMessage" class="mt-2 text-center text-lg font-semibold text-green-600">
+      {{ orderMessage }}
+    </p>
   </div>
 </template>
