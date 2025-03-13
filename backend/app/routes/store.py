@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from ..models import Store
 from ..database import get_db
 
-router = APIRouter(prefix="/stores", tags=["Store"])
+router = APIRouter(prefix="/api/stores", tags=["Store"])
 
 class StoreResponse(BaseModel):
 

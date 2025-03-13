@@ -7,7 +7,7 @@ from ..models import Item
 from ..database import get_db
 
 
-router = APIRouter(prefix="/menu", tags=["Menu"])
+router = APIRouter(prefix="/api/menu", tags=["Menu"])
 
 @router.get("/")
 def read_menu_items(
