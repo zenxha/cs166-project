@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from pydantic import BaseModel
-from ..models import FoodOrder, ItemsInOrder
+from ..models import FoodOrder, ItemsInOrder, Item
 from ..database import get_db
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
@@ -14,6 +14,18 @@ class OrderItem(BaseModel):
     quantity: int
 
 class OrderCreate(BaseModel):
+    login: str
+    storeid: int
+    items: List[OrderItem]  # List of items in the order
+
+    class Config:
+        orm_mode = True 
+        from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.strftime('%Y-%m-%d %H:%M:%S')
+        }
+
+class OrderResponse(BaseModel):
     orderid: Optional[int] = None 
     login: str
     storeid: int
@@ -29,16 +41,17 @@ class OrderCreate(BaseModel):
             datetime: lambda v: v.strftime('%Y-%m-%d %H:%M:%S')
         }
 
-@router.post("/", response_model=OrderCreate)
+@router.post("/", response_model=OrderResponse)
 def create_order(order: OrderCreate, db: Session = Depends(get_db)):
     try:
         # Create a new food order
+        total_price = sum(item.quantity * db.query(Item.price).filter(Item.itemname == item.itemname).scalar() for item in order.items)
         new_order = FoodOrder(
             login=order.login,
             storeid=order.storeid,
-            totalprice=order.totalprice,
-            ordertimestamp=order.ordertimestamp,
-            orderstatus=order.orderstatus
+            totalprice=total_price,
+            ordertimestamp=datetime.now(),
+            orderstatus="Pending"  # Default status
         )
 
         db.add(new_order)
