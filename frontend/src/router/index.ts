@@ -10,6 +10,11 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/pages/RegisterPage.vue'),
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/pages/LoginPage.vue'),
@@ -18,6 +23,11 @@ const router = createRouter({
       path: '/menu',
       name: 'menu',
       component: () => import('@/pages/MenuPage.vue'),
+    },
+    {
+      path: '/order',
+      name: 'order',
+      component: () => import('@/pages/PlaceOrderPage.vue'),
     },
     // {
     //   path: '/about',

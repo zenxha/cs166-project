@@ -17,15 +17,46 @@ interface OrderRequest {
   items: OrderItem[];
 }
 
+interface RegisterRequest {
+  fname: string;
+  lname: string;
+  email: string;
+  password: string;
+  phoneNum: string;
+}
+
 export const handlers = [
+  // Mock user register
+  http.post('/api/auth/register', async ({ request }) => {
+    const { fname, lname, email, password, phoneNum } = (await request.json()) as RegisterRequest;
+
+    if (!fname || !lname || !email || !password || !phoneNum) {
+      return new HttpResponse(null, { status: 400 });
+    }
+
+    return HttpResponse.json({
+      message: 'Registration successful!',
+      user: {
+        id: Math.floor(Math.random() * 1000),
+        name,
+        email,
+        phoneNum,
+        role: 'customer',
+        favoriteItem: null,
+      },
+    });
+  }),
+
   // Mock user login
   http.post('/api/auth/login', async ({ request }) => {
+    console.log("Got auth login request!")
     const { email, password } = (await request.json()) as LoginRequest
 
     if (email === 'user@example.com' && password === 'password') {
       return HttpResponse.json({
         id: 1,
-        name: 'John Doe',
+        fname: 'John',
+        lname: 'Doe',
         role: 'customer',
       })
     }
@@ -68,5 +99,5 @@ export const handlers = [
     });
   }),
 
-  http.get('/favicon.ico', () => new HttpResponse(null, { status: 204 })),
+  // http.get('/favicon.ico', () => new HttpResponse(null, { status: 204 })),
 ]
