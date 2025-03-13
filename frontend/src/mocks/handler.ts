@@ -18,8 +18,7 @@ interface OrderRequest {
 }
 
 interface RegisterRequest {
-  fname: string;
-  lname: string;
+  login: string;
   email: string;
   password: string;
   phoneNum: string;
@@ -136,9 +135,9 @@ let mockUserProfile: UserProfile = {
 export const handlers = [
   // Mock user register
   http.post('/api/auth/register', async ({ request }) => {
-    const { fname, lname, email, password, phoneNum } = (await request.json()) as RegisterRequest;
+    const { login, email, password, phoneNum } = (await request.json()) as RegisterRequest;
 
-    if (!fname || !lname || !email || !password || !phoneNum) {
+    if (!login || !email || !password || !phoneNum) {
       return new HttpResponse(null, { status: 400 });
     }
 

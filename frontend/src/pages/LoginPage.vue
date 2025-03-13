@@ -42,7 +42,12 @@ const login = async () => {
         placeholder="Password"
         class="mb-2 w-full rounded border p-2"
       />
-      <button @click="login" class="mt-4 w-full rounded bg-blue-500 p-2 text-white">Login</button>
+      <button
+        @click="login"
+        class="mt-4 w-full cursor-pointer rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
+      >
+        Login
+      </button>
 
       <p v-if="errorMessage" class="mt-2 text-red-500">{{ errorMessage }}</p>
 

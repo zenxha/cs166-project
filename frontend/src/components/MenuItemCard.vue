@@ -14,7 +14,7 @@ defineProps<{ item: MenuItem; buttonLabel?: string; buttonAction?: (item: MenuIt
     <button
       v-if="buttonLabel && buttonAction"
       @click="buttonAction(item)"
-      class="mt-2 rounded bg-blue-500 px-4 py-2 text-white"
+      class="mt-2 cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
     >
       {{ buttonLabel }}
     </button>

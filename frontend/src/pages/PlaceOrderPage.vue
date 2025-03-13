@@ -10,7 +10,9 @@ import CartSummary from '@/components/CartSummary.vue';
 const menuStore = useMenuStore();
 const orderStore = useOrderStore();
 const authStore = useAuthStore();
+
 const orderMessage = ref<string | null>(null);
+const messageType = ref<'success' | 'error' | null>(null);
 
 onMounted(() => {
   menuStore.fetchMenu();
@@ -20,10 +22,12 @@ onMounted(() => {
 const handleOrder = async () => {
   if (!authStore.isAuthenticated) {
     orderMessage.value = 'You must be logged in to place an order.';
+    messageType.value = 'error';
     return;
   }
 
   const result = await orderStore.placeOrder();
+  messageType.value = result.success ? 'success' : 'error';
   orderMessage.value = result.message;
 };
 
@@ -67,13 +71,17 @@ console.log(orderStore.stores);
     <button
       @click="handleOrder"
       :disabled="!authStore.isAuthenticated"
-      class="mt-4 w-full rounded bg-green-500 px-4 py-2 text-white"
+      class="mt-4 w-full cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
     >
       Place Order
     </button>
 
     <!-- Order Confirmation -->
-    <p v-if="orderMessage" class="mt-2 text-center text-lg font-semibold text-green-600">
+    <p
+      v-if="orderMessage"
+      class="mt-2 text-center text-lg font-semibold"
+      :class="messageType === 'error' ? 'text-red-500' : 'text-green-500'"
+    >
       {{ orderMessage }}
     </p>
   </div>

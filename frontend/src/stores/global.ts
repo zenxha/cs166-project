@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-const router = useRouter();
 
 export const useGlobalStore = defineStore('global', () => {
   const logoutListeners = ref<Array<() => void>>([]);
@@ -15,8 +13,6 @@ export const useGlobalStore = defineStore('global', () => {
   function triggerLogout() {
     logoutListeners.value.forEach((callback) => callback()); // Call all registered listeners
     logoutListeners.value = []; // Clear listeners after logout
-
-    router.push('/login');
   }
 
   return { registerLogoutListener, triggerLogout };
