@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useAdminStore } from '@/stores/admin';
+import type { User } from '@/stores/admin';
 
 import EditUserModal from '@/components/EditUserModal.vue';
 
 const adminStore = useAdminStore();
 const selectedUser = ref<User | null>(null);
-const editField = ref<'name' | 'email' | null>(null);
+const editField = ref<'login' | 'email' | null>(null);
 const isModalOpen = ref(false);
 
 onMounted(() => {
   adminStore.fetchUsers();
 });
 
-const openEditModal = (user: User, field: 'name' | 'email') => {
+const openEditModal = (user: User, field: 'login' | 'email') => {
   selectedUser.value = user;
   editField.value = field;
   isModalOpen.value = true;

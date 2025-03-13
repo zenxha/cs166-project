@@ -32,25 +32,25 @@ const login = async () => {
       <h2 class="mb-4 text-xl font-bold">Login</h2>
       <form @submit.prevent="login">
         <input
-        v-model="email"
-        type="email"
-        placeholder="Email"
-        class="mb-2 w-full rounded border p-2"
-        required
-      />
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Password"
-        class="mb-2 w-full rounded border p-2"
-        required
-      />
-      <button
-        @click="login"
-        class="mt-4 w-full cursor-pointer rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
-      >
-        Login
-      </button>
+          v-model="email"
+          type="email"
+          placeholder="Email"
+          class="mb-2 w-full rounded border p-2"
+          required
+        />
+        <input
+          v-model="password"
+          type="password"
+          placeholder="Password"
+          class="mb-2 w-full rounded border p-2"
+          required
+        />
+        <button
+          @click="login"
+          class="mt-4 w-full cursor-pointer rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
+        >
+          Login
+        </button>
       </form>
 
       <p v-if="errorMessage" class="mt-2 text-red-500">{{ errorMessage }}</p>

@@ -30,7 +30,6 @@ const handleOrder = async () => {
   messageType.value = result.success ? 'success' : 'error';
   orderMessage.value = result.message;
 };
-
 </script>
 
 <template>

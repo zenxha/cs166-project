@@ -43,7 +43,7 @@ const router = createRouter({
     },
     {
       path: '/manage',
-      redirect: '/manage/users',
+      redirect: '/manage/menu',
     },
     {
       path: '/manage/users',
@@ -53,14 +53,14 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
-    // {
-    //   path: '/manage/menu',
-    //   name: 'manage menu',
-    //   component: () => import('@/pages/ManageMenuPage.vue'),
-    //   meta: {
-    //     requiresAuth: true,
-    //   }
-    // },
+    {
+      path: '/manage/menu',
+      name: 'manage menu',
+      component: () => import('@/pages/ManageMenuPage.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
     // {
     //   path: '/about',
     //   name: 'about',

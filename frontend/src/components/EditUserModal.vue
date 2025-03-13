@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, watch, computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 import type { User } from '@/stores/admin';
 
 const props = defineProps<{
   user: User | null;
-  field: 'name' | 'email' | 'phoneNum';
+  field: 'login' | 'email' | 'phoneNum';
   isOpen: boolean;
 }>();
 const emit = defineEmits(['updateUser', 'close']);
@@ -23,7 +23,7 @@ watch(
 
 const fieldLabel = computed(() => {
   const labels: Record<string, string> = {
-    name: 'Name',
+    login: 'Login',
     email: 'Email',
     phoneNum: 'Phone Number',
   };

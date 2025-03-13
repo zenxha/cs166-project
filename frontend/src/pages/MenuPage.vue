@@ -9,7 +9,6 @@ const menuStore = useMenuStore();
 onMounted(() => {
   menuStore.fetchMenu();
 });
-
 </script>
 
 <template>
@@ -29,7 +28,7 @@ onMounted(() => {
         v-model.number="menuStore.maxPrice"
         type="number"
         placeholder="Max Price"
-        class="rounded border p-2 w-32"
+        class="w-32 rounded border p-2"
       />
 
       <select v-model="menuStore.sortOrder" class="rounded border p-2">

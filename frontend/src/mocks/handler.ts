@@ -13,6 +13,7 @@ interface OrderItem {
 }
 
 interface OrderRequest {
+  login: string;
   storeId: number;
   items: OrderItem[];
 }
@@ -160,10 +161,12 @@ export const handlers = [
 
     if (email === 'user@example.com' && password === 'password') {
       return HttpResponse.json({
+        login: 'john_doe',
         role: 'customer',
       });
     } else if (email === 'admin@example.com' && password === 'admin') {
       return HttpResponse.json({
+        login: 'admin',
         role: 'admin',
       });
     }
@@ -228,6 +231,26 @@ export const handlers = [
     }
 
     return HttpResponse.json(filteredMenu);
+  }),
+
+  // Add new menu items
+  http.post('/api/menu', async ({ request }) => {
+    const newItem = (await request.json()) as MenuItem;
+    console.log('api server Received menuItem', newItem);
+    mockMenu.push(newItem);
+    return HttpResponse.json(newItem);
+  }),
+
+  http.put('/api/menu/:itemname', async ({ params, request }) => {
+    const { itemname } = params;
+    const updates = (await request.json()) as Partial<MenuItem>;
+
+    const index = mockMenu.findIndex((item) => item.itemname === itemname);
+    if (index !== -1) {
+      mockMenu[index] = { ...mockMenu[index], ...updates };
+      return HttpResponse.json(mockMenu[index]);
+    }
+    return new HttpResponse(null, { status: 404 });
   }),
 
   http.get('/api/stores', () => {
