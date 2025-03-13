@@ -33,7 +33,7 @@ class UserResponse(BaseModel):
     login: str
     role: str
     phonenum: str
-    favoriteitem: Optional[str] = None  # Optional field for favorite item
+    favoriteitems: Optional[str] = None 
 
     class Config:
         orm_mode = True  # Enable ORM mode to read data as dict
@@ -52,7 +52,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_user)  # Refresh to get the newly created user
 
-        return {"login": new_user.login, "role": new_user.role, "phonenum": new_user.phonenum, "favoriteitem": ""}  # Return the created user
+        return {"login": new_user.login, "role": new_user.role, "phonenum": new_user.phonenum, "favoriteitems": ""}  # Return the created user
 
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
