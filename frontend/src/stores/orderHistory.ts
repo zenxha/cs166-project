@@ -19,10 +19,11 @@ export type Order = {
 
 export const useOrderHistoryStore = defineStore('orderHistory', () => {
   const orders = ref<Order[]>([]);
+  const username = ref('');
+
   const totalOrders = ref(0);
   const perPage = ref(5);
   const currentPage = ref(1);
-  const username = ref('');
 
   async function fetchOrderHistory() {
     if (!username.value) return;
@@ -37,7 +38,11 @@ export const useOrderHistoryStore = defineStore('orderHistory', () => {
     }
   }
 
-  const totalPages = computed(() => Math.ceil(totalOrders.value / perPage.value));
+  // const totalPages = computed(() => Math.ceil(totalOrders.value / perPage.value));
+  const totalPages = computed(() => {
+    const pages = Math.ceil(totalOrders.value / perPage.value);
+    return pages > 0 && !isNaN(pages) ? pages : 1;
+  });
 
   return { orders, totalOrders, perPage, currentPage, totalPages, fetchOrderHistory, username };
 });
