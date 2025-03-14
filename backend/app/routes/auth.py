@@ -77,7 +77,7 @@ def login(curr_user: UserLogin, db: Session = Depends(get_db)):
             "exp": expiration,  
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-        return {"access_token": token, "token_type": "bearer"}  
+        return {"access_token": token, "token_type": "bearer", "user": {"login": user.login, "role": user.role}}  # Return the token and user info
 
 
     except SQLAlchemyError as e:
