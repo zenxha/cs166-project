@@ -9,7 +9,7 @@ type Store = {
   address: string;
   city: string;
   state: string;
-  isOpen: string;
+  isopen: string;
   reviewScore: number;
 };
 
@@ -66,12 +66,11 @@ export const useOrderStore = defineStore('order', () => {
     }
 
     try {
-      const response = await api.post('/api/order', {
+      const response = await api.post('/api/orders/create', {
         login: authStore.username,
-        storeId: selectedStore.value.storeid,
-        items: cart.value.map(({ itemname, price, quantity }) => ({
+        storeid: selectedStore.value.storeid,
+        items: cart.value.map(({ itemname, quantity }) => ({
           itemname,
-          price,
           quantity,
         })),
       });
