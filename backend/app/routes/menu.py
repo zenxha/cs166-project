@@ -21,7 +21,7 @@ def read_menu_items(
 
     # filters
     if type:
-        if type not in ["Main", "Side"]:
+        if type not in ["entree", "sides", "drinks"]:
             raise HTTPException(status_code=400, detail="Invalid menu item type specified")
         query = query.filter(Item.typeofitem == type)
     if maxprice is not None:
@@ -99,7 +99,7 @@ def update_menu_item(
     if menu_item.ingredients:
         existing_item.ingredients = menu_item.ingredients
     if menu_item.typeofitem:
-        if menu_item.typeofitem not in ["Main", "Side"]:
+        if menu_item.typeofitem not in ["entree", "sides", "drinks"]:
             raise HTTPException(status_code=400, detail="Invalid menu item type specified")
         existing_item.typeofitem = menu_item.typeofitem
     if menu_item.price:
