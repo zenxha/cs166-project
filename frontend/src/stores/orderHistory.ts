@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import api from '@/api/axiosInstance';
+import { useAuthStore } from './auth';
 
 export type OrderReceiptEntry = {
   itemname: string;
@@ -25,14 +26,23 @@ export const useOrderHistoryStore = defineStore('orderHistory', () => {
   const perPage = ref(5);
   const currentPage = ref(1);
 
+  const authStore = useAuthStore();
+
   async function fetchOrderHistory() {
     if (!username.value) return;
     try {
       const response = await api.get('/api/orders', {
-        params: { login: username.value, limit: perPage.value, page: currentPage.value },
+        params: {
+          login: username.value,
+          limit: perPage.value,
+          page: currentPage.value,
+        },
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
       });
 
-      console.log("Got order history resposne as", response.data);
+      console.log('Got order history resposne as', response.data);
       orders.value = response.data;
       totalOrders.value = response.data.length;
     } catch (error) {

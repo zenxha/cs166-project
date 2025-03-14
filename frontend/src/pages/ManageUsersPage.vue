@@ -17,7 +17,7 @@ onMounted(() => {
   adminStore.fetchUsers();
 });
 
-const openEditModal = (user: User, field: 'login' | 'phoneNum' ) => {
+const openEditModal = (user: User, field: 'login' | 'phoneNum') => {
   selectedUser.value = user;
   editField.value = field;
   isModalOpen.value = true;
@@ -49,87 +49,86 @@ const updateUser = (login: string, updates: Partial<User>) => {
     </div>
 
     <!-- Search & Sort Controls -->
-<div class="flex flex-wrap items-center justify-between bg-white shadow-md rounded-lg p-4 mb-6">
-  <!-- Search Input -->
-  <input
-    v-model="adminStore.searchQuery"
-    type="text"
-    placeholder="Search users..."
-    class="w-1/3 min-w-[200px] border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-  />
+    <div class="mb-6 flex flex-wrap items-center justify-between rounded-lg bg-white p-4 shadow-md">
+      <!-- Search Input -->
+      <input
+        v-model="adminStore.searchQuery"
+        type="text"
+        placeholder="Search users..."
+        class="w-1/3 min-w-[200px] rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+      />
 
-  <!-- Sort Field -->
-  <select
-    v-model="adminStore.sortField"
-    class="border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-400"
-  >
-    <option :value="null">Sort By</option>
-    <option value="login">Login</option>
-    <option value="role">Role</option>
-  </select>
-
-  <!-- Sort Order -->
-  <select
-    v-model="adminStore.sortOrder"
-    class="border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-400"
-  >
-    <option :value="null">Order</option>
-    <option value="asc">Ascending</option>
-    <option value="desc">Descending</option>
-  </select>
-</div>
-
-<!-- User Table -->
-<table class="w-full border-collapse shadow-lg rounded-lg overflow-hidden">
-  <thead>
-    <tr class="bg-blue-500 text-white text-left">
-      <th class="border border-gray-300 p-3">Login</th>
-      <th class="border border-gray-300 p-3">Role</th>
-      <th class="border border-gray-300 p-3">Phone</th>
-      <th class="border border-gray-300 p-3">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      v-for="user in adminStore.filteredUsers"
-      :key="user.login"
-      class="odd:bg-gray-100 hover:bg-gray-200 transition"
-    >
-      <td
-        class="cursor-pointer border border-gray-300 p-3 hover:underline text-blue-600"
-        @click="openEditModal(user, 'login')"
+      <!-- Sort Field -->
+      <select
+        v-model="adminStore.sortField"
+        class="rounded-lg border border-gray-300 p-2 text-gray-700 focus:border-blue-400 focus:ring focus:outline-none"
       >
-        {{ user.login }}
-      </td>
-      <td class="border border-gray-300 p-3">
-        <select
-          v-model="user.role"
-          @change="adminStore.updateUser(user.login, { role: user.role })"
-          class="border border-gray-300 rounded-md p-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          <option value="customer">Customer</option>
-          <option value="driver">Driver</option>
-          <option value="admin">Manager</option>
-        </select>
-      </td>
-      <td
-        class="cursor-pointer border border-gray-300 p-3 hover:underline text-blue-600"
-        @click="openEditModal(user, 'phoneNum')"
-      >
-        {{ user.phoneNum }}
-      </td>
-      <td class="border border-gray-300 p-3">
-        <button
-          @click="adminStore.updateUser(user.login, { role: 'customer' })"
-          class="cursor-pointer text-blue-500 hover:underline font-semibold"
-        >
-          Reset Role
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        <option :value="null">Sort By</option>
+        <option value="login">Login</option>
+        <option value="role">Role</option>
+      </select>
 
+      <!-- Sort Order -->
+      <select
+        v-model="adminStore.sortOrder"
+        class="rounded-lg border border-gray-300 p-2 text-gray-700 focus:border-blue-400 focus:ring focus:outline-none"
+      >
+        <option :value="null">Order</option>
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+      </select>
+    </div>
+
+    <!-- User Table -->
+    <table class="w-full border-collapse overflow-hidden rounded-lg shadow-lg">
+      <thead>
+        <tr class="bg-blue-500 text-left text-white">
+          <th class="border border-gray-300 p-3">Login</th>
+          <th class="border border-gray-300 p-3">Role</th>
+          <th class="border border-gray-300 p-3">Phone</th>
+          <th class="border border-gray-300 p-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="user in adminStore.filteredUsers"
+          :key="user.login"
+          class="transition odd:bg-gray-100 hover:bg-gray-200"
+        >
+          <td
+            class="cursor-pointer border border-gray-300 p-3 text-blue-600 hover:underline"
+            @click="openEditModal(user, 'login')"
+          >
+            {{ user.login }}
+          </td>
+          <td class="border border-gray-300 p-3">
+            <select
+              v-model="user.role"
+              @change="adminStore.updateUser(user.login, { role: user.role })"
+              class="rounded-md border border-gray-300 bg-white p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            >
+              <option value="customer">Customer</option>
+              <option value="driver">Driver</option>
+              <option value="admin">Manager</option>
+            </select>
+          </td>
+          <td
+            class="cursor-pointer border border-gray-300 p-3 text-blue-600 hover:underline"
+            @click="openEditModal(user, 'phoneNum')"
+          >
+            {{ user.phoneNum }}
+          </td>
+          <td class="border border-gray-300 p-3">
+            <button
+              @click="adminStore.updateUser(user.login, { role: 'customer' })"
+              class="cursor-pointer font-semibold text-blue-500 hover:underline"
+            >
+              Reset Role
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <!-- Edit User Modal -->
     <!-- @updateUser (event from component) = "updateUser (function from above)" -->

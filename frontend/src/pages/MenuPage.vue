@@ -7,6 +7,10 @@ const menuStore = useMenuStore();
 
 // Fetch menu items on mount
 onMounted(() => {
+  menuStore.filterType = null;
+  menuStore.maxPrice = null;
+  menuStore.sortOrder = null;
+
   menuStore.fetchMenu();
 });
 </script>

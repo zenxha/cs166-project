@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+// import { computed } from 'vue';
 import { useOrderStore } from '@/stores/order';
 
 const orderStore = useOrderStore();
@@ -19,11 +19,13 @@ const orderStore = useOrderStore();
           type="number"
           class="w-16 rounded border p-1 text-center"
           :value="item.quantity"
-          @input="orderStore.updateQuantity(item.itemname, item.quantity + 1)"
+          @input="
+            (event) => orderStore.updateQuantity(item.itemname, parseInt(event.target.value) || 1)
+          "
           min="1"
         />
         <button
-          @click="orderStore.removeFromCart(item.id)"
+          @click="orderStore.removeFromCart(item.itemname)"
           class="ml-4 cursor-pointer text-red-600 hover:underline"
         >
           Remove

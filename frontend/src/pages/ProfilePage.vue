@@ -49,7 +49,7 @@ watch([() => orderHistoryStore.perPage, () => orderHistoryStore.currentPage], as
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-6 overflow-auto">
+  <div class="container mx-auto overflow-auto px-4 py-6">
     <h1 class="mb-4 text-2xl font-bold">Profile</h1>
 
     <div v-if="userStore.profile" class="mb-6 rounded bg-white p-6 shadow-md">
@@ -77,18 +77,33 @@ watch([() => orderHistoryStore.perPage, () => orderHistoryStore.currentPage], as
     <h1 class="mb-4 text-2xl font-bold">Order Lookup</h1>
 
     <div class="mb-6 flex items-center space-x-2">
-      <input v-model="orderLookupStore.searchOrderId" type="text" placeholder="Enter Order ID" class="border p-2 rounded w-1/3" />
-      <button @click="orderLookupStore.fetchOrderById" class="px-4 py-2 bg-blue-500 text-white rounded">Lookup</button>
+      <input
+        v-model="orderLookupStore.searchOrderId"
+        type="text"
+        placeholder="Enter Order ID"
+        class="w-1/3 rounded border p-2"
+      />
+      <button
+        @click="orderLookupStore.fetchOrderById"
+        class="rounded bg-blue-500 px-4 py-2 text-white"
+      >
+        Lookup
+      </button>
     </div>
 
-    <p v-if="orderLookupStore.errorMessage" class="text-red-500">{{ orderLookupStore.errorMessage }}</p>
+    <p v-if="orderLookupStore.errorMessage" class="text-red-500">
+      {{ orderLookupStore.errorMessage }}
+    </p>
 
     <!-- Display Found Order -->
-    <div v-if="orderLookupStore.order" class="border p-4 rounded shadow-md mb-6">
+    <div v-if="orderLookupStore.order" class="mb-6 rounded border p-4 shadow-md">
       <h2 class="text-lg font-bold">Order Details</h2>
       <p><strong>Order ID:</strong> {{ orderLookupStore.order.orderid }}</p>
       <p><strong>Total Price:</strong> ${{ orderLookupStore.order.totalprice.toFixed(2) }}</p>
-      <p><strong>Date:</strong> {{ new Date(orderLookupStore.order.ordertimestamp).toLocaleString() }}</p>
+      <p>
+        <strong>Date:</strong>
+        {{ new Date(orderLookupStore.order.ordertimestamp).toLocaleString() }}
+      </p>
       <p><strong>Status:</strong> {{ orderLookupStore.order.orderstatus.trim() }}</p>
 
       <h3 class="mt-4 font-bold">Items:</h3>

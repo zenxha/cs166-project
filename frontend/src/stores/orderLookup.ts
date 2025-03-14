@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import api from '@/api/axiosInstance';
+import { useAuthStore } from './auth';
 
 export type OrderReceiptEntry = {
   itemname: string;
@@ -22,8 +23,10 @@ export const useOrderLookupStore = defineStore('orderLookup', () => {
   const searchOrderId = ref('');
   const errorMessage = ref<string | null>(null);
 
+  const authStore = useAuthStore();
+
   async function fetchOrderById() {
-    console.log("Fetching order with id", searchOrderId.value);
+    console.log('Fetching order with id', searchOrderId.value);
     if (!searchOrderId.value) {
       errorMessage.value = 'Please enter an Order ID';
       return;
@@ -32,15 +35,20 @@ export const useOrderLookupStore = defineStore('orderLookup', () => {
     try {
       const response = await api.get<Order[]>(`/api/orders/`, {
         params: {
-          orderid: searchOrderId.value
-        }
+          login: authStore.username,
+          orderid: searchOrderId.value,
+        },
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
       });
-      console.log("Got response as",response.data)
+      console.log('Got response as', response.data);
       order.value = response.data[0];
-      console.log(order.value.totalprice, "is totalprice");
+      console.log(order.value.totalprice, 'is totalprice');
       errorMessage.value = null;
     } catch (error) {
       errorMessage.value = 'Order not found. Please check the ID and try again.';
+      console.log(error);
       order.value = null;
     }
   }

@@ -26,10 +26,12 @@ export const useOrderStore = defineStore('order', () => {
 
   async function fetchStores() {
     try {
-      const response = await api.get<Store[]>('/api/stores');
-      // stores.value = response.data.map((obj : Store, index : number) => ({...obj, id: index }));
+      const response = await api.get<Store[]>('/api/stores', {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      });
       stores.value = response.data;
-      console.log(stores.value);
     } catch (error) {
       console.error('Failed to fetch stores:', error);
     }
@@ -66,14 +68,22 @@ export const useOrderStore = defineStore('order', () => {
     }
 
     try {
-      const response = await api.post('/api/orders/create', {
-        login: authStore.username,
-        storeid: selectedStore.value.storeid,
-        items: cart.value.map(({ itemname, quantity }) => ({
-          itemname,
-          quantity,
-        })),
-      });
+      const response = await api.post(
+        '/api/orders/create',
+        {
+          login: authStore.username,
+          storeid: selectedStore.value.storeid,
+          items: cart.value.map(({ itemname, quantity }) => ({
+            itemname,
+            quantity,
+          })),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.token}`,
+          },
+        },
+      );
 
       cart.value = []; // Clear the cart after ordering
       return {
@@ -81,7 +91,7 @@ export const useOrderStore = defineStore('order', () => {
         message: `Order placed! Total: $${response.data.totalprice.toFixed(2)}`,
       };
     } catch (error) {
-      console.log("ERRORED WHEN PLACING ORDER!");
+      console.log('ERRORED WHEN PLACING ORDER!');
       console.log(error);
       return { success: false, message: 'Failed to place order. Please try again.' };
     }

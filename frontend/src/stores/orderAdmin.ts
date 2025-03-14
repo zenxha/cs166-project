@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import api from '@/api/axiosInstance';
+import { useAuthStore } from './auth';
 
 export type OrderReceiptEntry = {
   itemname: string;
   quantity: number;
 };
-
 
 export type Order = {
   orderid: number;
@@ -19,9 +19,9 @@ export type Order = {
 };
 
 export type OrderResponse = {
-  orders: Order[],
-  totalOrders: number,
-}
+  orders: Order[];
+  totalOrders: number;
+};
 
 export const useOrderAdminStore = defineStore('orderAdmin', () => {
   const orders = ref<Order[]>([]);
@@ -33,6 +33,8 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
   const perPage = ref(5);
   const currentPage = ref(1);
 
+  const authStore = useAuthStore();
+
   async function fetchOrders() {
     try {
       const url = '/api/orders';
@@ -40,14 +42,17 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
         params: {
           limit: perPage.value,
           // page: currentPage.value,
-        }
+        },
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
       });
-      console.log("OA RD is",response.data);
+      console.log('OA RD is', response.data);
 
       // orders.value = response.data;
-      orders.value = response.data.map(order => ({
+      orders.value = response.data.map((order) => ({
         ...order,
-        orderstatus: order.orderstatus?.trim() || "", // Trim if exists, else default to empty string
+        orderstatus: order.orderstatus?.trim() || '',
       })) as Order[];
       totalOrders.value = response.data.length;
     } catch (error) {
@@ -57,16 +62,29 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
 
   async function updateOrderStatus(orderid: number, newStatus: Order['orderstatus']) {
     try {
-      const response = await api.put(`/api/orders/${orderid}/status`, { status: newStatus });
+      const response = await api.put(
+        `/api/orders/${orderid}/status`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.token}`,
+          },
+        },
+      );
       const index = orders.value.findIndex((o) => o.orderid === orderid);
-      if (index !== -1) orders.value[index] = response.data;
+      if (index !== -1) {
+        console.log('Updating to', response.data);
+        const trimmedResponse = response.data;
+        trimmedResponse.orderstatus = trimmedResponse.orderstatus.trim();
+        orders.value[index] = trimmedResponse;
+      }
     } catch (error) {
       console.error('Failed to update order status:', error);
     }
   }
 
   const filteredOrders = computed(() => {
-    console.log("Orders is below");
+    console.log('Orders is below');
     console.log(orders.value);
     let result = [...orders.value];
 

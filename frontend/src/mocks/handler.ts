@@ -267,7 +267,7 @@ export const handlers = [
   http.post('/api/auth/register', async ({ request }) => {
     const { login, password, phoneNum } = (await request.json()) as RegisterRequest;
 
-    if (!login|| !password || !phoneNum) {
+    if (!login || !password || !phoneNum) {
       return new HttpResponse(null, { status: 400 });
     }
 

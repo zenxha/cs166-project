@@ -52,6 +52,8 @@ const openEditModal = (item: MenuItem) => {
 };
 
 const updateMenuItem = (itemname: string, updates: Partial<MenuItem>) => {
+  updates.typeofitem = updates.typeofitem.trim();
+  console.log(updates.typeofitem, 'Is typeofitem');
   menuAdminStore.updateMenuItem(itemname, updates);
   isModalOpen.value = false;
 };
@@ -77,23 +79,29 @@ const updateMenuItem = (itemname: string, updates: Partial<MenuItem>) => {
     </div>
 
     <!-- Search & Sort Controls -->
-    <div class="bg-white shadow-md rounded-lg p-4 flex flex-wrap items-center justify-between mb-6">
+    <div class="mb-6 flex flex-wrap items-center justify-between rounded-lg bg-white p-4 shadow-md">
       <input
         v-model="menuAdminStore.searchQuery"
         type="text"
         placeholder="Search menu..."
-        class="w-full sm:w-1/3 rounded-md border p-2 text-gray-700 focus:ring-2 focus:ring-blue-400"
+        class="w-full rounded-md border p-2 text-gray-700 focus:ring-2 focus:ring-blue-400 sm:w-1/3"
       />
 
-      <div class="flex space-x-4 mt-2 sm:mt-0">
-        <select v-model="menuAdminStore.sortField" class="rounded-md border p-2 text-gray-700 focus:ring-2 focus:ring-blue-400">
+      <div class="mt-2 flex space-x-4 sm:mt-0">
+        <select
+          v-model="menuAdminStore.sortField"
+          class="rounded-md border p-2 text-gray-700 focus:ring-2 focus:ring-blue-400"
+        >
           <option :value="null">Sort By</option>
           <option value="itemname">Item Name</option>
           <option value="price">Price</option>
           <option value="typeofitem">Category</option>
         </select>
 
-        <select v-model="menuAdminStore.sortOrder" class="rounded-md border p-2 text-gray-700 focus:ring-2 focus:ring-blue-400">
+        <select
+          v-model="menuAdminStore.sortOrder"
+          class="rounded-md border p-2 text-gray-700 focus:ring-2 focus:ring-blue-400"
+        >
           <option :value="null">Order</option>
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
@@ -102,9 +110,9 @@ const updateMenuItem = (itemname: string, updates: Partial<MenuItem>) => {
     </div>
 
     <!-- Menu Table -->
-    <table class="w-full border-collapse shadow-lg rounded-lg overflow-hidden">
+    <table class="w-full border-collapse overflow-hidden rounded-lg shadow-lg">
       <thead>
-        <tr class="bg-gradient-to-r bg-blue-500 text-white">
+        <tr class="bg-blue-500 bg-gradient-to-r text-white">
           <th class="border border-gray-300 p-3 text-left">Item Name</th>
           <th class="border border-gray-300 p-3 text-left">Ingredients</th>
           <th class="border border-gray-300 p-3 text-left">Category</th>
@@ -113,16 +121,22 @@ const updateMenuItem = (itemname: string, updates: Partial<MenuItem>) => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in menuAdminStore.filteredMenuItems" :key="item.itemname" class="odd:bg-gray-100 hover:bg-gray-200 transition">
+        <tr
+          v-for="item in menuAdminStore.filteredMenuItems"
+          :key="item.itemname"
+          class="transition odd:bg-gray-100 hover:bg-gray-200"
+        >
           <td
-            class="border border-gray-300 p-3 font-semibold text-blue-600 hover:underline cursor-pointer"
+            class="cursor-pointer border border-gray-300 p-3 font-semibold text-blue-600 hover:underline"
             @click="openEditModal(item)"
           >
             {{ item.itemname }}
           </td>
           <td class="border border-gray-300 p-3">{{ item.ingredients }}</td>
           <td class="border border-gray-300 p-3">{{ item.typeofitem }}</td>
-          <td class="border border-gray-300 p-3 text-green-600 font-semibold">${{ item.price.toFixed(2) }}</td>
+          <td class="border border-gray-300 p-3 font-semibold text-green-600">
+            ${{ item.price.toFixed(2) }}
+          </td>
           <td class="border border-gray-300 p-3">{{ item.description }}</td>
         </tr>
       </tbody>

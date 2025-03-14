@@ -4,7 +4,7 @@ import type { User } from '@/stores/admin';
 
 const props = defineProps<{
   user: User | null;
-  field: 'login'| 'phoneNum';
+  field: 'login' | 'phoneNum';
   isOpen: boolean;
 }>();
 const emit = defineEmits(['updateUser', 'close']);

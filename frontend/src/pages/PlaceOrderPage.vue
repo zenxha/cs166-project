@@ -15,6 +15,10 @@ const orderMessage = ref<string | null>(null);
 const messageType = ref<'success' | 'error' | null>(null);
 
 onMounted(() => {
+  menuStore.filterType = null;
+  menuStore.maxPrice = null;
+  menuStore.sortOrder = null;
+
   menuStore.fetchMenu();
   orderStore.fetchStores();
 });
@@ -46,9 +50,34 @@ const handleOrder = async () => {
     <label class="block font-semibold">Select Store:</label>
     <select v-model="orderStore.selectedStore" class="mb-4 w-full rounded border p-2">
       <option v-for="store in orderStore.stores" :key="store.storeid" :value="store">
-        {{ store.address }}, {{ store.city }}, {{ store.state }} ({{ store.isopen === 'yes' ? 'Open' : 'Closed' }})
+        {{ store.address }}, {{ store.city }}, {{ store.state }} ({{
+          store.isopen === 'yes' ? 'Open' : 'Closed'
+        }})
       </option>
     </select>
+
+    <!-- Filters -->
+    <div class="mb-4 flex space-x-4">
+      <select v-model="menuStore.filterType" class="rounded border p-2">
+        <option :value="null">All Types</option>
+        <option value="Main">Main Dishes</option>
+        <option value="Drink">Drinks</option>
+        <option value="Side">Sides</option>
+      </select>
+
+      <input
+        v-model.number="menuStore.maxPrice"
+        type="number"
+        placeholder="Max Price"
+        class="w-32 rounded border p-2"
+      />
+
+      <select v-model="menuStore.sortOrder" class="rounded border p-2">
+        <option :value="null">No Sorting</option>
+        <option value="asc">Price: Low to High</option>
+        <option value="desc">Price: High to Low</option>
+      </select>
+    </div>
 
     <!-- Menu Items -->
     <h2 class="mb-2 text-lg font-semibold">Menu Items:</h2>

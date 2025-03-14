@@ -40,19 +40,21 @@ watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async 
     </div>
 
     <!-- Search & Sort Controls -->
-    <div class="mb-6 flex flex-wrap justify-between items-center gap-4 bg-white p-4 rounded-lg shadow-md">
+    <div
+      class="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-lg bg-white p-4 shadow-md"
+    >
       <input
         v-model="orderAdminStore.searchLogin"
         type="text"
         placeholder="Search by user..."
-        class="w-1/3 border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-300"
+        class="w-1/3 rounded-lg border border-gray-300 p-2 focus:ring focus:ring-blue-300"
       />
 
       <div class="flex items-center space-x-3">
-        <span class="text-gray-700 font-medium">Sort By:</span>
+        <span class="font-medium text-gray-700">Sort By:</span>
         <select
           v-model="orderAdminStore.sortField"
-          class="border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-300"
+          class="rounded-lg border border-gray-300 p-2 focus:ring focus:ring-blue-300"
         >
           <option :value="null">Sort By</option>
           <option value="ordertimestamp">Date</option>
@@ -62,10 +64,10 @@ watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async 
       </div>
 
       <div class="flex items-center space-x-3">
-        <span class="text-gray-700 font-medium">Order:</span>
+        <span class="font-medium text-gray-700">Order:</span>
         <select
           v-model="orderAdminStore.sortOrder"
-          class="border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-300"
+          class="rounded-lg border border-gray-300 p-2 focus:ring focus:ring-blue-300"
         >
           <option :value="null">Order</option>
           <option value="asc">Ascending</option>
@@ -75,19 +77,19 @@ watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async 
     </div>
 
     <!-- Pagination Controls -->
-    <div class="flex items-center justify-between bg-white shadow-md rounded-lg p-4 mb-6">
+    <div class="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-md">
       <div class="flex items-center space-x-3">
-        <span class="text-gray-700 font-semibold">Show:</span>
+        <span class="font-semibold text-gray-700">Show:</span>
         <select
           v-model="orderAdminStore.perPage"
           @change="orderAdminStore.currentPage = 1"
-          class="border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-400"
+          class="rounded-lg border border-gray-300 p-2 text-gray-700 focus:border-blue-400 focus:ring focus:outline-none"
         >
           <option value="5">5</option>
           <option value="10">10</option>
           <option value="25">25</option>
         </select>
-        <span class="text-gray-700 font-semibold">orders per page</span>
+        <span class="font-semibold text-gray-700">orders per page</span>
       </div>
 
       <!-- Pagination Navigation -->
@@ -95,17 +97,22 @@ watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async 
         <button
           @click="orderAdminStore.currentPage = Math.max(1, orderAdminStore.currentPage - 1)"
           :disabled="orderAdminStore.currentPage === 1"
-          class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition"
+          class="rounded-lg bg-gray-200 px-4 py-2 text-gray-600 transition hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Prev
         </button>
-        <span class="text-gray-700 font-semibold">
+        <span class="font-semibold text-gray-700">
           Page {{ orderAdminStore.currentPage }} of {{ orderAdminStore.totalPages }}
         </span>
         <button
-          @click="orderAdminStore.currentPage = Math.min(orderAdminStore.totalPages, orderAdminStore.currentPage + 1)"
+          @click="
+            orderAdminStore.currentPage = Math.min(
+              orderAdminStore.totalPages,
+              orderAdminStore.currentPage + 1,
+            )
+          "
           :disabled="orderAdminStore.currentPage >= orderAdminStore.totalPages"
-          class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition"
+          class="rounded-lg bg-gray-200 px-4 py-2 text-gray-600 transition hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Next
         </button>
@@ -114,9 +121,9 @@ watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async 
 
     <!-- Orders Table -->
     <div class="overflow-x-auto">
-      <table class="w-full border-collapse shadow-lg rounded-lg overflow-hidden">
+      <table class="w-full border-collapse overflow-hidden rounded-lg shadow-lg">
         <thead>
-          <tr class="bg-blue-500 text-white text-left">
+          <tr class="bg-blue-500 text-left text-white">
             <th class="border border-gray-300 p-3">Order ID</th>
             <th class="border border-gray-300 p-3">User</th>
             <th class="border border-gray-300 p-3">Total</th>
@@ -129,11 +136,11 @@ watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async 
           <tr
             v-for="order in orderAdminStore.filteredOrders"
             :key="order.orderid"
-            class="hover:bg-gray-200 transition"
+            class="transition hover:bg-gray-200"
           >
             <td class="border border-gray-300 p-3">{{ order.orderid }}</td>
             <td class="border border-gray-300 p-3">{{ order.login }}</td>
-            <td class="border border-gray-300 p-3 text-green-600 font-semibold">
+            <td class="border border-gray-300 p-3 font-semibold text-green-600">
               ${{ order.totalprice.toFixed(2) }}
             </td>
             <td class="border border-gray-300 p-3">
@@ -142,8 +149,13 @@ watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async 
             <td class="border border-gray-300 p-3">
               <select
                 v-model="order.orderstatus"
-                @change="orderAdminStore.updateOrderStatus(order.orderid, order.orderstatus.trim() as 'complete' | 'incomplete')"
-                class="border border-gray-300 p-2 rounded-lg bg-white shadow-sm focus:ring focus:ring-blue-300"
+                @change="
+                  orderAdminStore.updateOrderStatus(
+                    order.orderid,
+                    order.orderstatus.trim() as 'complete' | 'incomplete',
+                  )
+                "
+                class="rounded-lg border border-gray-300 bg-white p-2 shadow-sm focus:ring focus:ring-blue-300"
               >
                 <option value="incomplete">Incomplete</option>
                 <option value="complete">Complete</option>
@@ -160,6 +172,5 @@ watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async 
         </tbody>
       </table>
     </div>
-
   </div>
 </template>

@@ -8,7 +8,7 @@ defineProps<{ item: MenuItem; buttonLabel?: string; buttonAction?: (item: MenuIt
   <div class="rounded bg-white p-4 shadow">
     <h2 class="text-lg font-semibold">{{ item.itemname }}</h2>
     <p class="text-sm text-gray-600">Type: {{ item.typeofitem }}</p>
-    <p class="text-md font-bold">${{ item.price ? item.price.toFixed(2) : "N/A" }}</p>
+    <p class="text-md font-bold">${{ item.price ? item.price.toFixed(2) : 'N/A' }}</p>
 
     <!-- Conditionally show button -->
     <button

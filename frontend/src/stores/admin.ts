@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import api from '@/api/axiosInstance';
+import { useAuthStore } from './auth';
 
 export type User = {
   login: string;
@@ -12,12 +13,18 @@ export type User = {
 export const useAdminStore = defineStore('manager', () => {
   const users = ref<User[]>([]);
   const searchQuery = ref('');
-  const sortField = ref<'login'  | 'role' | null>(null);
+  const sortField = ref<'login' | 'role' | null>(null);
   const sortOrder = ref<'asc' | 'desc' | null>(null);
+
+  const authStore = useAuthStore();
 
   async function fetchUsers() {
     try {
-      const response = await api.get<User[]>('/api/users');
+      const response = await api.get<User[]>('/api/users', {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      });
       users.value = response.data;
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -26,7 +33,11 @@ export const useAdminStore = defineStore('manager', () => {
 
   async function updateUser(login: string, updates: Partial<User>) {
     try {
-      const response = await api.put(`/api/users/${login}`, updates);
+      const response = await api.put(`/api/users/${login}`, updates, {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      });
       const index = users.value.findIndex((u) => u.login === login);
       if (index !== -1) users.value[index] = response.data;
     } catch (error) {
@@ -38,9 +49,9 @@ export const useAdminStore = defineStore('manager', () => {
     let result = [...users.value];
 
     if (searchQuery.value) {
-      result = result.filter(
-        (user) =>
-          user.login.toLowerCase().includes(searchQuery.value.toLowerCase()));
+      result = result.filter((user) =>
+        user.login.toLowerCase().includes(searchQuery.value.toLowerCase()),
+      );
     }
 
     if (sortField.value && sortOrder.value) {

@@ -26,7 +26,11 @@ export const useUserStore = defineStore('user', () => {
     }
 
     try {
-      const response = await api.get(`/api/users/${authStore.username}`);
+      const response = await api.get(`/api/users/${authStore.username}`, {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      });
       profile.value = response.data;
     } catch (error) {
       console.error('Failed to fetch profile:', error);
@@ -40,10 +44,18 @@ export const useUserStore = defineStore('user', () => {
     }
 
     try {
-      await api.put(`/api/users/${authStore.username}`, {
-        phonenum: phonenum,
-        favoriteitems: favoriteitems,
-      });
+      await api.put(
+        `/api/users/${authStore.username}`,
+        {
+          phonenum: phonenum,
+          favoriteitems: favoriteitems,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.token}`,
+          },
+        },
+      );
       profile.value.phonenum = phonenum;
       profile.value.favoriteitems = favoriteitems;
     } catch (error) {

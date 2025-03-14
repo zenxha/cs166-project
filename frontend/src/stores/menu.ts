@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed, watch } from 'vue';
 import api from '@/api/axiosInstance';
+import { useAuthStore } from './auth';
 
 export type MenuItem = {
   id: number;
@@ -25,17 +26,25 @@ export const useMenuStore = defineStore('menu', () => {
       if (maxPrice.value !== null) params.maxprice = maxPrice.value;
       if (sortOrder.value) params.sort = sortOrder.value;
 
-      const response = await api.get<MenuItem[]>('/api/menu', { params });
+      const authStore = useAuthStore();
+
+      const response = await api.get<MenuItem[]>('/api/menu', {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      });
       if (typeof response.data !== 'object' || !Array.isArray(response.data)) {
         // console.error('Invalid response format:', response.data);
-        items.value = [{
-          id: 1,
-          itemname: "Test",
-          ingredients: "None",
-          price: 10.00,
-          typeofitem: "Main",
-          description:" Nothing",
-        }];
+        items.value = [
+          {
+            id: 1,
+            itemname: 'Test',
+            ingredients: 'None',
+            price: 10.0,
+            typeofitem: 'Main',
+            description: ' Nothing',
+          },
+        ];
         throw new Error('Received invalid menu data');
       }
 

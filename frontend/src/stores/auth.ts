@@ -29,9 +29,9 @@ export const useAuthStore = defineStore('auth', () => {
       // Store token securely
       localStorage.setItem('token', response.data.token);
 
-      console.log(token,"was stored locally!");
-      console.log(isAuthenticated,"is isAuthed");
-      console.log(isAdmin,"is administrator");
+      console.log(token, 'was stored locally!');
+      console.log(isAuthenticated, 'is isAuthed');
+      console.log(isAdmin, 'is administrator');
 
       console.log(response.data);
     } catch (error) {
@@ -45,11 +45,6 @@ export const useAuthStore = defineStore('auth', () => {
     globalStore.triggerLogout();
 
     try {
-      // await api.post(
-      //   '/api/auth/logout',
-      //   {},
-      //   { headers: { Authorization: `Bearer ${token.value}` } },
-      // );
       token.value = null;
       activeUser.value = null;
       localStorage.removeItem('token');
