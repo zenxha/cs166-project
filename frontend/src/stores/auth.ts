@@ -14,8 +14,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => Boolean(activeUser.value));
 
-  const isAdmin = computed(() => Boolean(activeUser.value?.role === 'admin'));
-  const isDriver = computed(() => Boolean(activeUser.value?.role === 'driver'));
+  const isAdmin = computed(() => Boolean(activeUser.value?.role.includes('manager')));
+  const isDriver = computed(() => Boolean(activeUser.value?.role.includes('driver')));
   const username = computed(() => activeUser.value?.login || '');
 
   async function login(login: string, password: string) {
@@ -31,6 +31,9 @@ export const useAuthStore = defineStore('auth', () => {
 
       console.log(token,"was stored locally!");
       console.log(isAuthenticated,"is isAuthed");
+      console.log(isAdmin,"is administrator");
+
+      console.log(response.data);
     } catch (error) {
       console.error('Login failed:', error);
       throw new Error('Invalid credentials');
@@ -42,11 +45,11 @@ export const useAuthStore = defineStore('auth', () => {
     globalStore.triggerLogout();
 
     try {
-      await api.post(
-        '/api/auth/logout',
-        {},
-        { headers: { Authorization: `Bearer ${token.value}` } },
-      );
+      // await api.post(
+      //   '/api/auth/logout',
+      //   {},
+      //   { headers: { Authorization: `Bearer ${token.value}` } },
+      // );
       token.value = null;
       activeUser.value = null;
       localStorage.removeItem('token');

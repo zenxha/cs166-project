@@ -41,7 +41,7 @@ interface MenuItem {
 
 interface User {
   login: string;
-  role: 'customer' | 'driver' | 'admin';
+  role: 'customer' | 'driver' | 'manager';
   favoriteItem: string;
   phoneNum: string;
   password: string;
@@ -80,11 +80,11 @@ let mockUsers: User[] = [
     password: 'driver',
   },
   {
-    login: 'admin',
-    role: 'admin',
+    login: 'manager',
+    role: 'manager',
     favoriteItem: 'Burger',
     phoneNum: '555-555-5555',
-    password: 'admin',
+    password: 'manager',
   },
 ];
 
@@ -167,7 +167,7 @@ let mockOrders: Order[] = [
   },
   {
     orderid: 3,
-    login: 'admin',
+    login: 'manager',
     storeid: 103,
     totalprice: 23.75,
     ordertimestamp: '2024-03-09T18:20:00Z',
@@ -179,7 +179,7 @@ let mockOrders: Order[] = [
   },
   {
     orderid: 4,
-    login: 'admin',
+    login: 'manager',
     storeid: 103,
     totalprice: 23.75,
     ordertimestamp: '2024-03-09T18:20:00Z',
@@ -191,7 +191,7 @@ let mockOrders: Order[] = [
   },
   {
     orderid: 5,
-    login: 'admin',
+    login: 'manager',
     storeid: 103,
     totalprice: 23.75,
     ordertimestamp: '2024-03-09T18:20:00Z',
@@ -203,7 +203,7 @@ let mockOrders: Order[] = [
   },
   {
     orderid: 6,
-    login: 'admin',
+    login: 'manager',
     storeid: 103,
     totalprice: 23.75,
     ordertimestamp: '2024-03-09T18:20:00Z',
@@ -215,7 +215,7 @@ let mockOrders: Order[] = [
   },
   {
     orderid: 7,
-    login: 'admin',
+    login: 'manager',
     storeid: 103,
     totalprice: 23.75,
     ordertimestamp: '2024-03-09T18:20:00Z',
@@ -227,7 +227,7 @@ let mockOrders: Order[] = [
   },
   {
     orderid: 8,
-    login: 'admin',
+    login: 'manager',
     storeid: 103,
     totalprice: 23.75,
     ordertimestamp: '2024-03-09T18:20:00Z',

@@ -31,8 +31,10 @@ export const useOrderHistoryStore = defineStore('orderHistory', () => {
       const response = await api.get('/api/orders', {
         params: { login: username.value, limit: perPage.value, page: currentPage.value },
       });
-      orders.value = response.data.orders;
-      totalOrders.value = response.data.totalOrders;
+
+      console.log("Got order history resposne as", response.data);
+      orders.value = response.data;
+      totalOrders.value = response.data.length;
     } catch (error) {
       console.error('Failed to fetch order history:', error);
     }

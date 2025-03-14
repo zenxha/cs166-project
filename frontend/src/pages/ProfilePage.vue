@@ -10,18 +10,18 @@ const userStore = useUserStore();
 const orderHistoryStore = useOrderHistoryStore();
 const orderLookupStore = useOrderLookupStore();
 
-const phoneNum = ref('');
-const favoriteItem = ref('');
+const phonenum = ref('');
+const favoriteitems = ref('');
 const updateMessage = ref<string | null>(null);
 
 onMounted(async () => {
-  phoneNum.value = '';
-  favoriteItem.value = '';
+  phonenum.value = '';
+  favoriteitems.value = '';
 
   await userStore.fetchProfile();
   if (userStore.profile) {
-    phoneNum.value = userStore.profile.phoneNum;
-    favoriteItem.value = userStore.profile.favoriteItem;
+    phonenum.value = userStore.profile.phonenum;
+    favoriteitems.value = userStore.profile.favoriteitems;
     orderHistoryStore.username = authStore.username;
     await orderHistoryStore.fetchOrderHistory();
   }
@@ -30,7 +30,7 @@ onMounted(async () => {
 const updateProfile = async () => {
   // Prevent toctou attack
   const currentUser = authStore.username;
-  await userStore.updateProfile(phoneNum.value, favoriteItem.value);
+  await userStore.updateProfile(phonenum.value, favoriteitems.value);
 
   // Ensure update applies to the same user
   if (authStore.username === currentUser) {
@@ -58,10 +58,10 @@ watch([() => orderHistoryStore.perPage, () => orderHistoryStore.currentPage], as
       <!-- Editable Fields -->
       <div class="mt-4">
         <label class="block font-semibold">Phone Number:</label>
-        <input v-model="phoneNum" type="text" class="w-full rounded border p-2" />
+        <input v-model="phonenum" type="text" class="w-full rounded border p-2" />
 
         <label class="mt-2 block font-semibold">Favorite Item:</label>
-        <input v-model="favoriteItem" type="text" class="w-full rounded border p-2" />
+        <input v-model="favoriteitems" type="text" class="w-full rounded border p-2" />
       </div>
 
       <!-- Update Profile Button -->

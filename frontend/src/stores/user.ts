@@ -40,11 +40,10 @@ export const useUserStore = defineStore('user', () => {
     }
 
     try {
-      await api.put(
-        '/api/user/profile',
-        { phoneNum: phonenum, favoriteItem: favoriteitems },
-        { headers: { Authorization: `Bearer ${authStore.token}` } }, // Send token in header
-      );
+      await api.put(`/api/users/${authStore.username}`, {
+        phonenum: phonenum,
+        favoriteitems: favoriteitems,
+      });
       profile.value.phonenum = phonenum;
       profile.value.favoriteitems = favoriteitems;
     } catch (error) {

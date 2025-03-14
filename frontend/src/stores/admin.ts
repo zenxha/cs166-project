@@ -4,12 +4,12 @@ import api from '@/api/axiosInstance';
 
 export type User = {
   login: string;
-  role: 'customer' | 'driver' | 'admin';
+  role: 'customer' | 'driver' | 'manager';
   favoriteItem: string;
   phoneNum: string;
 };
 
-export const useAdminStore = defineStore('admin', () => {
+export const useAdminStore = defineStore('manager', () => {
   const users = ref<User[]>([]);
   const searchQuery = ref('');
   const sortField = ref<'login'  | 'role' | null>(null);
@@ -40,7 +40,7 @@ export const useAdminStore = defineStore('admin', () => {
     if (searchQuery.value) {
       result = result.filter(
         (user) =>
-          user.login.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          user.login.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     }
 

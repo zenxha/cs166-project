@@ -30,9 +30,14 @@ export const useOrderLookupStore = defineStore('orderLookup', () => {
     }
 
     try {
-      const response = await api.get<Order>(`/api/orders/${searchOrderId.value}`);
+      const response = await api.get<Order[]>(`/api/orders/`, {
+        params: {
+          orderid: searchOrderId.value
+        }
+      });
       console.log("Got response as",response.data)
-      order.value = response.data;
+      order.value = response.data[0];
+      console.log(order.value.totalprice, "is totalprice");
       errorMessage.value = null;
     } catch (error) {
       errorMessage.value = 'Order not found. Please check the ID and try again.';

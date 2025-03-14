@@ -39,7 +39,7 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
       const response = await api.get<OrderResponse>(url, {
         params: {
           limit: perPage.value,
-          page: currentPage.value,
+          // page: currentPage.value,
         }
       });
       orders.value = response.data.orders;
@@ -60,6 +60,8 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
   }
 
   const filteredOrders = computed(() => {
+    console.log("Orders is below");
+    console.log(orders.value);
     let result = [...orders.value];
 
     if (searchLogin.value) {
