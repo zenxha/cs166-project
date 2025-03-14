@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useGlobalStore } from './global';
-import axios from 'axios';
+import api from '@/api/axiosInstance';
 
 export interface UserData {
   login: string;

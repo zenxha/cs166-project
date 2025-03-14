@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import axios from 'axios';
+import api from '@/api/axiosInstance';
 import type { MenuItem } from '@/stores/menu';
 import { useAuthStore } from '@/stores/auth';
 

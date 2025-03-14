@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import axios from 'axios';
+import api from '@/api/axiosInstance';
 
 export type OrderReceiptEntry = {
   itemname: string;
@@ -30,7 +30,7 @@ export const useOrderLookupStore = defineStore('orderLookup', () => {
     }
 
     try {
-      const response = await axios.get<Order>(`/api/orders/${searchOrderId.value}`);
+      const response = await api.get<Order>(`/api/orders/${searchOrderId.value}`);
       console.log("Got response as",response.data)
       order.value = response.data;
       errorMessage.value = null;

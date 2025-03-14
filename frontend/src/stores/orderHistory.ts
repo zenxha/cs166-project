@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import axios from 'axios';
+import api from '@/api/axiosInstance';
 
 export type OrderReceiptEntry = {
   itemname: string;
@@ -28,7 +28,7 @@ export const useOrderHistoryStore = defineStore('orderHistory', () => {
   async function fetchOrderHistory() {
     if (!username.value) return;
     try {
-      const response = await axios.get('/api/orders', {
+      const response = await api.get('/api/orders', {
         params: { login: username.value, limit: perPage.value, page: currentPage.value },
       });
       orders.value = response.data.orders;

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { onMounted, ref } from 'vue';
-import axios from 'axios';
+import api from '@/api/axiosInstance';
 
 import { useGlobalStore } from './global';
 import { useAuthStore } from './auth';
@@ -24,7 +24,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     try {
-      const response = await axios.get<UserProfile>('/api/user/profile', {
+      const response = await api.get<UserProfile>('/api/user/profile', {
         headers: { Authorization: `Bearer ${authStore.token}` }, // Send token in header
       });
       profile.value = response.data;
@@ -40,7 +40,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     try {
-      await axios.put(
+      await api.put(
         '/api/user/profile',
         { phoneNum, favoriteItem },
         { headers: { Authorization: `Bearer ${authStore.token}` } }, // Send token in header

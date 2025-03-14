@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import axios from 'axios';
+import api from '@/api/axiosInstance';
 
 export type OrderReceiptEntry = {
   itemname: string;
@@ -35,8 +35,8 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
 
   async function fetchOrders() {
     try {
-      let url = '/api/orders';
-      const response = await axios.get<OrderResponse>(url, {
+      const url = '/api/orders';
+      const response = await api.get<OrderResponse>(url, {
         params: {
           limit: perPage.value,
           page: currentPage.value,
