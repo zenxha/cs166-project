@@ -62,7 +62,7 @@ class TokenResponse(BaseModel):
     class Config:
         orm_mode = True
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login")
 def login(curr_user: UserLogin, db: Session = Depends(get_db)):
     try:
         query = db.query(User).filter(User.login == curr_user.login, User.password == curr_user.password)

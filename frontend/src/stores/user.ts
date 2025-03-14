@@ -23,7 +23,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     try {
-      const response = await api.get<UserProfile>('/api/user/profile', {
+      const response = await api.get<UserProfile>(`/api/user/${authStore.username}`, {
         headers: { Authorization: `Bearer ${authStore.token}` }, // Send token in header
       });
       profile.value = response.data;

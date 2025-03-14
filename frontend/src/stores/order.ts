@@ -5,11 +5,12 @@ import type { MenuItem } from '@/stores/menu';
 import { useAuthStore } from '@/stores/auth';
 
 type Store = {
-  id: number;
-  name: string;
-  location: string;
+  storeid: number;
+  address: string;
+  city: string;
+  state: string;
+  isOpen: string;
   reviewScore: number;
-  isOpen: boolean;
 };
 
 type OrderItem = MenuItem & { quantity: number };
@@ -26,7 +27,9 @@ export const useOrderStore = defineStore('order', () => {
   async function fetchStores() {
     try {
       const response = await api.get<Store[]>('/api/stores');
+      // stores.value = response.data.map((obj : Store, index : number) => ({...obj, id: index }));
       stores.value = response.data;
+      console.log(stores.value);
     } catch (error) {
       console.error('Failed to fetch stores:', error);
     }
@@ -65,7 +68,7 @@ export const useOrderStore = defineStore('order', () => {
     try {
       const response = await api.post('/api/order', {
         login: authStore.username,
-        storeId: selectedStore.value.id,
+        storeId: selectedStore.value.storeid,
         items: cart.value.map(({ itemname, price, quantity }) => ({
           itemname,
           price,

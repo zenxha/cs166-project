@@ -45,8 +45,8 @@ const handleOrder = async () => {
     <!-- Store Selection -->
     <label class="block font-semibold">Select Store:</label>
     <select v-model="orderStore.selectedStore" class="mb-4 w-full rounded border p-2">
-      <option v-for="store in orderStore.stores" :key="store.id" :value="store">
-        {{ store.name }} ({{ store.isOpen ? 'Open' : 'Closed' }})
+      <option v-for="store in orderStore.stores" :key="store.storeid" :value="store">
+        {{ store.address }}, {{ store.city }}, {{ store.state }} ({{ store.isOpen === 'yes' ? 'Open' : 'Closed' }})
       </option>
     </select>
 
