@@ -14,6 +14,9 @@ class UserUpdate(BaseModel):
     role: Optional[str] = None
     phonenum: Optional[str] = None
     favoriteitems: Optional[str] = None 
+    class Config:
+        orm_mode = True
+        from_attributes = True
 
 
 @router.get("/", response_model=List[UserUpdate])
