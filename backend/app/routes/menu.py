@@ -54,7 +54,7 @@ class MenuItemUpdate(BaseModel):
     itemname: Optional[str] = None
     ingredients: Optional[str] = None
     typeofitem: Optional[str] = None
-    price: Optional[str] = None
+    price: Optional[float] = None
     description: Optional[str] = None
 
     class Config:
