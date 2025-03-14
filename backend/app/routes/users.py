@@ -52,3 +52,15 @@ def update_user(curruser: UserUpdate, db: Session = Depends(get_db), login: str 
     
     except Exception as e:
         raise HTTPException(status_code=400, detail="Error: " + str(e))
+    
+@router.get("/{login}", response_model=UserUpdate)
+def get_user_by_login(login: str, db: Session = Depends(get_db)):
+    try:
+        user = db.query(User).filter(User.login == login).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        return user
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail="Database error: " + str(e))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Error: " + str(e))
