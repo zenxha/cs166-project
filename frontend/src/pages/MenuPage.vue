@@ -23,9 +23,9 @@ onMounted(() => {
     <div class="mb-4 flex space-x-4">
       <select v-model="menuStore.filterType" class="rounded border p-2">
         <option :value="null">All Types</option>
-        <option value="Main">Main Dishes</option>
-        <option value="Drink">Drinks</option>
-        <option value="Side">Sides</option>
+        <option value="entree">Main Dishes</option>
+        <option value="drinks">Drinks</option>
+        <option value="sides">Sides</option>
       </select>
 
       <input

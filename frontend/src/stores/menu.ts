@@ -28,10 +28,11 @@ export const useMenuStore = defineStore('menu', () => {
 
       const authStore = useAuthStore();
 
+      console.log(filterType.value, "is ft value");
       const response = await api.get<MenuItem[]>('/api/menu', {
         params: {
           type: filterType.value,
-          maxprice: maxPrice.value,
+          ...(maxPrice.value && { maxprice: maxPrice.value }),
           sort: sortOrder.value,
         },
         headers: {
@@ -45,7 +46,7 @@ export const useMenuStore = defineStore('menu', () => {
             itemname: 'Test',
             ingredients: 'None',
             price: 10.0,
-            typeofitem: 'Main',
+            typeofitem: 'entree',
             description: ' Nothing',
           },
         ];
