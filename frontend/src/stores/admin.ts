@@ -4,7 +4,6 @@ import api from '@/api/axiosInstance';
 
 export type User = {
   login: string;
-  email: string;
   role: 'customer' | 'driver' | 'admin';
   favoriteItem: string;
   phoneNum: string;
@@ -13,7 +12,7 @@ export type User = {
 export const useAdminStore = defineStore('admin', () => {
   const users = ref<User[]>([]);
   const searchQuery = ref('');
-  const sortField = ref<'login' | 'email' | 'role' | null>(null);
+  const sortField = ref<'login'  | 'role' | null>(null);
   const sortOrder = ref<'asc' | 'desc' | null>(null);
 
   async function fetchUsers() {
@@ -42,7 +41,6 @@ export const useAdminStore = defineStore('admin', () => {
       result = result.filter(
         (user) =>
           user.login.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          user.email.toLowerCase().includes(searchQuery.value.toLowerCase()),
       );
     }
 

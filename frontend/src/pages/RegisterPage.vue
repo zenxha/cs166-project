@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import api from '@/api/axiosInstance';
 
 const router = useRouter();
 
 const login = ref('');
-const email = ref('');
 const password = ref('');
 const phoneNum = ref('');
 const errorMessage = ref('');
@@ -15,17 +15,16 @@ const registerUser = async () => {
   errorMessage.value = '';
   successMessage.value = '';
 
-  if (!login.value || !email.value || !password.value || !phoneNum.value) {
+  if (!login.value || !password.value || !phoneNum.value) {
     errorMessage.value = 'All fields are required.';
     return;
   }
 
   try {
-    const response = await axios.post('/api/auth/register', {
+    const response = await api.post('/api/auth/register', {
       login: login.value,
-      email: email.value,
       password: password.value,
-      phoneNum: phoneNum.value,
+      phonenum: phoneNum.value,
     });
 
     successMessage.value = response.data.message;
@@ -41,22 +40,16 @@ const registerUser = async () => {
     <div class="w-96 rounded-lg bg-white p-6 shadow-md">
       <h2 class="mb-4 text-xl font-bold">Register</h2>
       <input
-        v-model="email"
-        type="email"
-        placeholder="Email"
-        class="mb-2 w-full rounded border p-2"
-      />
-      <input
         v-model="login"
         type="text"
         placeholder="Username"
-        class="mb-6 w-full rounded border p-2"
+        class="mb-2 w-full rounded border p-2"
       />
       <input
         v-model="password"
         type="password"
         placeholder="Password"
-        class="mb-6 w-full rounded border p-2"
+        class="mb-2 w-full rounded border p-2"
       />
       <input
         v-model="phoneNum"

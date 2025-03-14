@@ -41,7 +41,6 @@ const login = async () => {
           required
         />
         <button
-          @click="login"
           class="mt-4 w-full cursor-pointer rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
         >
           Login

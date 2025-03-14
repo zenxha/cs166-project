@@ -21,12 +21,16 @@ export const useAuthStore = defineStore('auth', () => {
   async function login(login: string, password: string) {
     // activeUser.value = userData;
     try {
-      const response = await axios.post('/api/auth/login', { login, password });
+      const response = await api.post('/api/auth/login', { login, password });
+      console.log(response.data);
       token.value = response.data.token;
       activeUser.value = response.data.user;
 
       // Store token securely
       localStorage.setItem('token', response.data.token);
+
+      console.log(token,"was stored locally!");
+      console.log(isAuthenticated,"is isAuthed");
     } catch (error) {
       console.error('Login failed:', error);
       throw new Error('Invalid credentials');
@@ -38,7 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
     globalStore.triggerLogout();
 
     try {
-      await axios.post(
+      await api.post(
         '/api/auth/logout',
         {},
         { headers: { Authorization: `Bearer ${token.value}` } },

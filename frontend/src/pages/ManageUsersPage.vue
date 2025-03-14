@@ -8,7 +8,7 @@ import EditUserModal from '@/components/EditUserModal.vue';
 
 const adminStore = useAdminStore();
 const selectedUser = ref<User | null>(null);
-const editField = ref<'login' | 'email' | 'phoneNum' | null>(null);
+const editField = ref<'login' | 'phoneNum' | null>(null);
 const isModalOpen = ref(false);
 
 const router = useRouter();
@@ -17,7 +17,7 @@ onMounted(() => {
   adminStore.fetchUsers();
 });
 
-const openEditModal = (user: User, field: 'login' | 'email' | 'phoneNum' ) => {
+const openEditModal = (user: User, field: 'login' | 'phoneNum' ) => {
   selectedUser.value = user;
   editField.value = field;
   isModalOpen.value = true;
@@ -65,7 +65,6 @@ const updateUser = (login: string, updates: Partial<User>) => {
   >
     <option :value="null">Sort By</option>
     <option value="login">Login</option>
-    <option value="email">Email</option>
     <option value="role">Role</option>
   </select>
 
@@ -85,7 +84,6 @@ const updateUser = (login: string, updates: Partial<User>) => {
   <thead>
     <tr class="bg-blue-500 text-white text-left">
       <th class="border border-gray-300 p-3">Login</th>
-      <th class="border border-gray-300 p-3">Email</th>
       <th class="border border-gray-300 p-3">Role</th>
       <th class="border border-gray-300 p-3">Phone</th>
       <th class="border border-gray-300 p-3">Actions</th>
@@ -102,12 +100,6 @@ const updateUser = (login: string, updates: Partial<User>) => {
         @click="openEditModal(user, 'login')"
       >
         {{ user.login }}
-      </td>
-      <td
-        class="cursor-pointer border border-gray-300 p-3 hover:underline text-blue-600"
-        @click="openEditModal(user, 'email')"
-      >
-        {{ user.email }}
       </td>
       <td class="border border-gray-300 p-3">
         <select

@@ -63,7 +63,7 @@ export const useOrderStore = defineStore('order', () => {
     }
 
     try {
-      const response = await axios.post('/api/order', {
+      const response = await api.post('/api/order', {
         login: authStore.username,
         storeId: selectedStore.value.id,
         items: cart.value.map(({ itemname, price, quantity }) => ({

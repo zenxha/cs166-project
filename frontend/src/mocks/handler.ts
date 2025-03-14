@@ -22,13 +22,11 @@ interface OrderRequest {
 
 interface RegisterRequest {
   login: string;
-  email: string;
   password: string;
   phoneNum: string;
 }
 
 interface UserProfile {
-  email: string;
   phoneNum: string;
   favoriteItem: string;
 }
@@ -43,7 +41,6 @@ interface MenuItem {
 
 interface User {
   login: string;
-  email: string;
   role: 'customer' | 'driver' | 'admin';
   favoriteItem: string;
   phoneNum: string;
@@ -70,7 +67,6 @@ interface Order {
 let mockUsers: User[] = [
   {
     login: 'user',
-    email: 'john@example.com',
     role: 'customer',
     favoriteItem: 'Burger',
     phoneNum: '123-456-7890',
@@ -78,7 +74,6 @@ let mockUsers: User[] = [
   },
   {
     login: 'driver',
-    email: 'jane@example.com',
     role: 'driver',
     favoriteItem: 'Burger',
     phoneNum: '987-654-3210',
@@ -86,7 +81,6 @@ let mockUsers: User[] = [
   },
   {
     login: 'admin',
-    email: 'admin@example.com',
     role: 'admin',
     favoriteItem: 'Burger',
     phoneNum: '555-555-5555',
@@ -145,12 +139,6 @@ let mockMenu: MenuItem[] = [
     description: 'any potatoers in chat',
   },
 ];
-
-// let mockUserProfile: UserProfile = {
-//   email: 'user@example.com',
-//   phoneNum: '123-456-7890',
-//   favoriteItem: 'Pepperoni Pizza',
-// };
 
 let mockOrders: Order[] = [
   {
@@ -277,9 +265,9 @@ const getUserRole = (login: string) => {
 export const handlers = [
   // Mock user register
   http.post('/api/auth/register', async ({ request }) => {
-    const { login, email, password, phoneNum } = (await request.json()) as RegisterRequest;
+    const { login, password, phoneNum } = (await request.json()) as RegisterRequest;
 
-    if (!login || !email || !password || !phoneNum) {
+    if (!login|| !password || !phoneNum) {
       return new HttpResponse(null, { status: 400 });
     }
 
@@ -287,7 +275,6 @@ export const handlers = [
       message: 'Registration successful!',
       user: {
         id: Math.floor(Math.random() * 1000),
-        email,
         phoneNum,
         role: 'customer',
         favoriteItem: null,
@@ -345,7 +332,6 @@ export const handlers = [
     }
 
     return HttpResponse.json({
-      email: user.email,
       role: user.role,
       favoriteItem: user.favoriteItem,
       phoneNum: user.phoneNum,

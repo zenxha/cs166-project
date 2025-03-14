@@ -54,7 +54,6 @@ watch([() => orderHistoryStore.perPage, () => orderHistoryStore.currentPage], as
 
     <div v-if="userStore.profile" class="mb-6 rounded bg-white p-6 shadow-md">
       <p><strong>Login:</strong> {{ authStore.username }}</p>
-      <p><strong>Email:</strong> {{ userStore.profile.email }}</p>
 
       <!-- Editable Fields -->
       <div class="mt-4">

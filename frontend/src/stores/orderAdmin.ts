@@ -51,7 +51,7 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
 
   async function updateOrderStatus(orderid: number, newStatus: Order['orderstatus']) {
     try {
-      const response = await axios.put(`/api/orders/${orderid}`, { orderstatus: newStatus });
+      const response = await api.put(`/api/orders/${orderid}`, { orderstatus: newStatus });
       const index = orders.value.findIndex((o) => o.orderid === orderid);
       if (index !== -1) orders.value[index] = response.data;
     } catch (error) {

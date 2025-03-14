@@ -29,7 +29,7 @@ export const useMenuAdminStore = defineStore('menuAdmin', () => {
     console.log('Received menuItem', newItem);
     try {
       console.log('SEnding to post /api/menu');
-      const response = await axios.post('/api/menu', newItem);
+      const response = await api.post('/api/menu', newItem);
       menuItems.value.push(response.data);
     } catch (error) {
       console.error('Failed to add menu item:', error);
@@ -61,7 +61,7 @@ export const useMenuAdminStore = defineStore('menuAdmin', () => {
 
   async function updateMenuItem(itemname: string, updates: Partial<MenuItem>) {
     try {
-      const response = await axios.put(`/api/menu/${itemname}`, updates);
+      const response = await api.put(`/api/menu/${itemname}`, updates);
       const index = menuItems.value.findIndex((item) => item.itemname === itemname);
       if (index !== -1) menuItems.value[index] = response.data;
     } catch (error) {

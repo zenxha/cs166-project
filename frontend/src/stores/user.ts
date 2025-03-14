@@ -6,7 +6,6 @@ import { useGlobalStore } from './global';
 import { useAuthStore } from './auth';
 
 interface UserProfile {
-  email: string;
   phoneNum: string;
   favoriteItem: string;
 }

@@ -4,7 +4,7 @@ import type { User } from '@/stores/admin';
 
 const props = defineProps<{
   user: User | null;
-  field: 'login' | 'email' | 'phoneNum';
+  field: 'login'| 'phoneNum';
   isOpen: boolean;
 }>();
 const emit = defineEmits(['updateUser', 'close']);
@@ -24,7 +24,6 @@ watch(
 const fieldLabel = computed(() => {
   const labels: Record<string, string> = {
     login: 'Login',
-    email: 'Email',
     phoneNum: 'Phone Number',
   };
   return labels[props.field] || 'Unknown';
