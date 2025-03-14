@@ -25,7 +25,7 @@ export const useMenuStore = defineStore('menu', () => {
       if (maxPrice.value !== null) params.maxprice = maxPrice.value;
       if (sortOrder.value) params.sort = sortOrder.value;
 
-      const response = await axios.get<MenuItem[]>('/api/menu', { params });
+      const response = await api.get<MenuItem[]>('/api/menu', { params });
       if (typeof response.data !== 'object' || !Array.isArray(response.data)) {
         // console.error('Invalid response format:', response.data);
         items.value = [{

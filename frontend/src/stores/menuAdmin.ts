@@ -18,7 +18,7 @@ export const useMenuAdminStore = defineStore('menuAdmin', () => {
 
   async function fetchMenu() {
     try {
-      const response = await axios.get<MenuItem[]>('/api/menu');
+      const response = await api.get<MenuItem[]>('/api/menu');
       menuItems.value = response.data;
     } catch (error) {
       console.error('Failed to fetch menu:', error);

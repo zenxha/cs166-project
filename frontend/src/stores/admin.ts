@@ -18,7 +18,7 @@ export const useAdminStore = defineStore('admin', () => {
 
   async function fetchUsers() {
     try {
-      const response = await axios.get<User[]>('/api/users');
+      const response = await api.get<User[]>('/api/users');
       users.value = response.data;
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -27,7 +27,7 @@ export const useAdminStore = defineStore('admin', () => {
 
   async function updateUser(login: string, updates: Partial<User>) {
     try {
-      const response = await axios.put(`/api/users/${login}`, updates);
+      const response = await api.put(`/api/users/${login}`, updates);
       const index = users.value.findIndex((u) => u.login === login);
       if (index !== -1) users.value[index] = response.data;
     } catch (error) {

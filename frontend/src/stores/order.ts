@@ -25,7 +25,7 @@ export const useOrderStore = defineStore('order', () => {
 
   async function fetchStores() {
     try {
-      const response = await axios.get<Store[]>('/api/stores');
+      const response = await api.get<Store[]>('/api/stores');
       stores.value = response.data;
     } catch (error) {
       console.error('Failed to fetch stores:', error);
