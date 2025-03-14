@@ -3,7 +3,7 @@
 <template>
   <div class="flex h-screen flex-col bg-gray-100">
     <NavBar />
-    <main class="flex-1 overflow-hidden">
+    <main class="flex-1 overflow-auto">
       <router-view />
     </main>
   </div>
