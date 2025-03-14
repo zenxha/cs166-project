@@ -43,7 +43,12 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
         }
       });
       console.log("OA RD is",response.data);
-      orders.value = response.data;
+
+      // orders.value = response.data;
+      orders.value = response.data.map(order => ({
+        ...order,
+        orderstatus: order.orderstatus?.trim() || "", // Trim if exists, else default to empty string
+      })) as Order[];
       totalOrders.value = response.data.length;
     } catch (error) {
       console.error('Failed to fetch orders:', error);
