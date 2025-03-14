@@ -42,7 +42,6 @@ export const useOrderHistoryStore = defineStore('orderHistory', () => {
         },
       });
 
-      console.log('Got order history resposne as', response.data);
       orders.value = response.data;
       totalOrders.value = response.data.length;
     } catch (error) {

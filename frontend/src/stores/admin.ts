@@ -25,7 +25,10 @@ export const useAdminStore = defineStore('manager', () => {
           Authorization: `Bearer ${authStore.token}`,
         },
       });
-      users.value = response.data;
+      users.value = response.data.map(user => ({
+        ...user,
+        role: user.role.trim(), // ✅ Trim role field before storing
+      })) as User[];
     } catch (error) {
       console.error('Failed to fetch users:', error);
     }
@@ -39,7 +42,10 @@ export const useAdminStore = defineStore('manager', () => {
         },
       });
       const index = users.value.findIndex((u) => u.login === login);
-      if (index !== -1) users.value[index] = response.data;
+      if (index !== -1) {
+        response.data.role = response.data.role.trim();
+        users.value[index] = response.data;
+      }
     } catch (error) {
       console.error('Failed to update user:', error);
     }

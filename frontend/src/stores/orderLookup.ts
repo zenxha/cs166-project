@@ -26,7 +26,6 @@ export const useOrderLookupStore = defineStore('orderLookup', () => {
   const authStore = useAuthStore();
 
   async function fetchOrderById() {
-    console.log('Fetching order with id', searchOrderId.value);
     if (!searchOrderId.value) {
       errorMessage.value = 'Please enter an Order ID';
       return;
@@ -42,9 +41,7 @@ export const useOrderLookupStore = defineStore('orderLookup', () => {
           Authorization: `Bearer ${authStore.token}`,
         },
       });
-      console.log('Got response as', response.data);
       order.value = response.data[0];
-      console.log(order.value.totalprice, 'is totalprice');
       errorMessage.value = null;
     } catch (error) {
       errorMessage.value = 'Order not found. Please check the ID and try again.';

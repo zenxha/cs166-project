@@ -8,7 +8,7 @@ import EditUserModal from '@/components/EditUserModal.vue';
 
 const adminStore = useAdminStore();
 const selectedUser = ref<User | null>(null);
-const editField = ref<'login' | 'phoneNum' | null>(null);
+const editField = ref<'login' | 'phonenum' | null>(null);
 const isModalOpen = ref(false);
 
 const router = useRouter();
@@ -17,7 +17,7 @@ onMounted(() => {
   adminStore.fetchUsers();
 });
 
-const openEditModal = (user: User, field: 'login' | 'phoneNum') => {
+const openEditModal = (user: User, field: 'login' | 'phonenum') => {
   selectedUser.value = user;
   editField.value = field;
   isModalOpen.value = true;
@@ -109,14 +109,14 @@ const updateUser = (login: string, updates: Partial<User>) => {
             >
               <option value="customer">Customer</option>
               <option value="driver">Driver</option>
-              <option value="admin">Manager</option>
+              <option value="manager">Manager</option>
             </select>
           </td>
           <td
             class="cursor-pointer border border-gray-300 p-3 text-blue-600 hover:underline"
-            @click="openEditModal(user, 'phoneNum')"
+            @click="openEditModal(user, 'phonenum')"
           >
-            {{ user.phoneNum }}
+            {{ user.phonenum }}
           </td>
           <td class="border border-gray-300 p-3">
             <button

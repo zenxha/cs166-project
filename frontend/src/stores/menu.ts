@@ -50,7 +50,7 @@ export const useMenuStore = defineStore('menu', () => {
 
       items.value = response.data;
     } catch (error) {
-      console.log('Failed to fetch menu:', error);
+      console.log(error);
     }
   }
 

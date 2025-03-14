@@ -4,7 +4,7 @@ import type { User } from '@/stores/admin';
 
 const props = defineProps<{
   user: User | null;
-  field: 'login' | 'phoneNum';
+  field: 'login' | 'phonenum';
   isOpen: boolean;
 }>();
 const emit = defineEmits(['updateUser', 'close']);
@@ -24,7 +24,7 @@ watch(
 const fieldLabel = computed(() => {
   const labels: Record<string, string> = {
     login: 'Login',
-    phoneNum: 'Phone Number',
+    phonenum: 'Phone Number',
   };
   return labels[props.field] || 'Unknown';
 });
@@ -43,7 +43,7 @@ const saveChanges = () => {
       <h2 class="mb-4 text-lg font-bold">Edit {{ fieldLabel }}</h2>
       <input
         v-model="inputValue"
-        :type="field === 'phoneNum' ? 'tel' : 'text'"
+        :type="field === 'phonenum' ? 'tel' : 'text'"
         class="w-full rounded border p-2"
       />
       <div class="mt-4 flex justify-end space-x-2">

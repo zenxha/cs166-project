@@ -33,14 +33,6 @@ const addMenuItem = () => {
     return;
   }
 
-  console.log(
-    'NewItem:',
-    newItem.value.itemname,
-    newItem.value.typeofitem,
-    newItem.value.price,
-    newItem.value.description,
-  );
-
   menuAdminStore.addMenuItem({ ...newItem.value });
   showAddModal.value = false;
   newItem.value = { itemname: '', ingredients: '', typeofitem: '', price: 0, description: '' };
@@ -53,7 +45,6 @@ const openEditModal = (item: MenuItem) => {
 
 const updateMenuItem = (itemname: string, updates: Partial<MenuItem>) => {
   updates.typeofitem = updates.typeofitem.trim();
-  console.log(updates.typeofitem, 'Is typeofitem');
   menuAdminStore.updateMenuItem(itemname, updates);
   isModalOpen.value = false;
 };

@@ -41,9 +41,6 @@ const updateProfile = async () => {
 };
 
 watch([() => orderHistoryStore.perPage, () => orderHistoryStore.currentPage], async () => {
-  console.log('Changed');
-  console.log(orderHistoryStore.orders);
-  console.log(orderHistoryStore.username);
   await orderHistoryStore.fetchOrderHistory();
 });
 </script>

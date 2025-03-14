@@ -22,18 +22,12 @@ export const useAuthStore = defineStore('auth', () => {
     // activeUser.value = userData;
     try {
       const response = await api.post('/api/auth/login', { login, password });
-      console.log(response.data);
       token.value = response.data.access_token;
       activeUser.value = response.data.user;
 
       // Store token securely
       localStorage.setItem('token', response.data.token);
 
-      console.log(token, 'was stored locally!');
-      console.log(isAuthenticated, 'is isAuthed');
-      console.log(isAdmin, 'is administrator');
-
-      console.log(response.data);
     } catch (error) {
       console.error('Login failed:', error);
       throw new Error('Invalid credentials');

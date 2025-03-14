@@ -91,7 +91,6 @@ export const useOrderStore = defineStore('order', () => {
         message: `Order placed! Total: $${response.data.totalprice.toFixed(2)}`,
       };
     } catch (error) {
-      console.log('ERRORED WHEN PLACING ORDER!');
       console.log(error);
       return { success: false, message: 'Failed to place order. Please try again.' };
     }

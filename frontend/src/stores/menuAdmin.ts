@@ -33,9 +33,7 @@ export const useMenuAdminStore = defineStore('menuAdmin', () => {
   }
 
   async function addMenuItem(newItem: MenuItem) {
-    console.log('Received menuItem', newItem);
     try {
-      console.log('SEnding to post /api/menu');
       const response = await api.post('/api/menu', newItem, {
         headers: {
           Authorization: `Bearer ${authStore.token}`,

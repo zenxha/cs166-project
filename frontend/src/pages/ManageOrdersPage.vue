@@ -13,9 +13,6 @@ onMounted(() => {
 });
 
 watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async () => {
-  console.log('Changed');
-  console.log(orderAdminStore.orders);
-  console.log(authStore.username);
   await orderAdminStore.fetchOrders();
 });
 </script>

@@ -47,7 +47,6 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
           Authorization: `Bearer ${authStore.token}`,
         },
       });
-      console.log('OA RD is', response.data);
 
       // orders.value = response.data;
       orders.value = response.data.map((order) => ({
@@ -73,7 +72,6 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
       );
       const index = orders.value.findIndex((o) => o.orderid === orderid);
       if (index !== -1) {
-        console.log('Updating to', response.data);
         const trimmedResponse = response.data;
         trimmedResponse.orderstatus = trimmedResponse.orderstatus.trim();
         orders.value[index] = trimmedResponse;
@@ -84,8 +82,6 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
   }
 
   const filteredOrders = computed(() => {
-    console.log('Orders is below');
-    console.log(orders.value);
     let result = [...orders.value];
 
     if (searchLogin.value) {
