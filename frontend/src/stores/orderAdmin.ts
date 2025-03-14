@@ -14,7 +14,7 @@ export type Order = {
   storeid: number;
   totalprice: number;
   ordertimestamp: string;
-  orderstatus: 'Pending' | 'Preparing' | 'Out for Delivery' | 'Delivered';
+  orderstatus: 'incomplete' | 'complete';
   items: OrderReceiptEntry[];
 };
 
@@ -36,14 +36,15 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
   async function fetchOrders() {
     try {
       const url = '/api/orders';
-      const response = await api.get<OrderResponse>(url, {
+      const response = await api.get<Order[]>(url, {
         params: {
           limit: perPage.value,
           // page: currentPage.value,
         }
       });
-      orders.value = response.data.orders;
-      totalOrders.value = response.data.totalOrders;
+      console.log("OA RD is",response.data);
+      orders.value = response.data;
+      totalOrders.value = response.data.length;
     } catch (error) {
       console.error('Failed to fetch orders:', error);
     }
@@ -51,7 +52,7 @@ export const useOrderAdminStore = defineStore('orderAdmin', () => {
 
   async function updateOrderStatus(orderid: number, newStatus: Order['orderstatus']) {
     try {
-      const response = await api.put(`/api/orders/${orderid}`, { orderstatus: newStatus });
+      const response = await api.put(`/api/orders/${orderid}/status`, { status: newStatus });
       const index = orders.value.findIndex((o) => o.orderid === orderid);
       if (index !== -1) orders.value[index] = response.data;
     } catch (error) {

@@ -40,8 +40,7 @@ export const useAdminStore = defineStore('manager', () => {
     if (searchQuery.value) {
       result = result.filter(
         (user) =>
-          user.login.toLowerCase().includes(searchQuery.value.toLowerCase())
-      );
+          user.login.toLowerCase().includes(searchQuery.value.toLowerCase()));
     }
 
     if (sortField.value && sortOrder.value) {

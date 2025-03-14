@@ -52,7 +52,7 @@ interface OrderReceiptEntry {
   quantity: number;
 }
 
-type OrderStatus = 'Pending' | 'Preparing' | 'Out for Delivery' | 'Delivered';
+type OrderStatus = 'incomplete' | 'complete';
 
 interface Order {
   orderid: number;

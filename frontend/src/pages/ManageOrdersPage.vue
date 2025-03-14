@@ -142,13 +142,11 @@ watch([() => orderAdminStore.perPage, () => orderAdminStore.currentPage], async 
             <td class="border border-gray-300 p-3">
               <select
                 v-model="order.orderstatus"
-                @change="orderAdminStore.updateOrderStatus(order.orderid, order.orderstatus)"
+                @change="orderAdminStore.updateOrderStatus(order.orderid, order.orderstatus.trim() as 'complete' | 'incomplete')"
                 class="border border-gray-300 p-2 rounded-lg bg-white shadow-sm focus:ring focus:ring-blue-300"
               >
-                <option value="Pending">Pending</option>
-                <option value="Preparing">Preparing</option>
-                <option value="Out for Delivery">Out for Delivery</option>
-                <option value="Delivered">Delivered</option>
+                <option value="incomplete">Incomplete</option>
+                <option value="complete">Complete</option>
               </select>
             </td>
             <td class="border border-gray-300 p-3">
