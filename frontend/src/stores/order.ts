@@ -10,7 +10,7 @@ type Store = {
   city: string;
   state: string;
   isopen: string;
-  reviewScore: number;
+  reviewscore: number;
 };
 
 type OrderItem = MenuItem & { quantity: number };

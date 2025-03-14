@@ -29,12 +29,16 @@ export const useMenuStore = defineStore('menu', () => {
       const authStore = useAuthStore();
 
       const response = await api.get<MenuItem[]>('/api/menu', {
+        params: {
+          type: filterType.value,
+          maxprice: maxPrice.value,
+          sort: sortOrder.value,
+        },
         headers: {
           Authorization: `Bearer ${authStore.token}`,
         },
       });
       if (typeof response.data !== 'object' || !Array.isArray(response.data)) {
-        // console.error('Invalid response format:', response.data);
         items.value = [
           {
             id: 1,
